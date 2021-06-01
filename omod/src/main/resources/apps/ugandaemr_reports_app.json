@@ -540,6 +540,13 @@
         "label": "Transitioning Children and Viral Load Monitoring  in PMTCT",
         "url": "reportingui/runReport.page?reportDefinition=639026cd-1cb9-46c1-9a06-81208e9ed412",
         "order": 10
+      },{
+        "id": "HMIS 009 TB Register",
+        "extensionPointId": "org.openmrs.module.ugandaemr.reports.registers",
+        "type": "link",
+        "label": "HMIS 009 TB Register",
+        "url": "reportingui/runReport.page?reportDefinition=3b9d317f-ac87-4141-b4c2-d93c8419b324",
+        "order":25
       }
     ]
   }
