@@ -59,6 +59,10 @@ public class SetupMERTxNew2019Report extends UgandaEMRDataExportManager {
         return "df5cfe63-f5c0-4b95-bdc9-f5767dc1ba17";
     }
 
+    public String getJSONDesignUuid() {
+        return "bb0d79b3-1c85-4d27-8902-c4f901f85968";
+    }
+
     @Override
     public String getUuid() {
         return "65fec0844-1970-43c5-bf77-b296415daa34";
@@ -85,7 +89,7 @@ public class SetupMERTxNew2019Report extends UgandaEMRDataExportManager {
 
     @Override
     public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
-        return Arrays.asList(buildReportDesign(reportDefinition));
+        return Arrays.asList(buildReportDesign(reportDefinition),buildJSONReportDesign(reportDefinition));
     }
 
     /**
@@ -98,6 +102,10 @@ public class SetupMERTxNew2019Report extends UgandaEMRDataExportManager {
     @Override
     public ReportDesign buildReportDesign(ReportDefinition reportDefinition) {
         return createExcelTemplateDesign(getExcelDesignUuid(), reportDefinition, "MER_TX_NEW_2019.xls");
+    }
+
+    public ReportDesign buildJSONReportDesign(ReportDefinition reportDefinition) {
+        return createJSONTemplateDesign(getJSONDesignUuid(), reportDefinition, "MER_TX_NEW_2019.json");
     }
 
     @Override
@@ -138,12 +146,18 @@ public class SetupMERTxNew2019Report extends UgandaEMRDataExportManager {
 
 
         addIndicator(dsd, "LAC", "Lactating At start on Art", lactatingAtStartOfArt, "");
+        addIndicator(dsd, "TOTAL", "Total At start on Art", havingArtStartDateDuringQuarter, "");
 
         addIndicator(dsd,"PWIDSf","PWIDs TX Curr on ART female",df.getPatientsInAll(females,PWIDS,havingArtStartDateDuringQuarter),"");
         addIndicator(dsd,"PWIDSm","PWIDs TX Curr on ART male",df.getPatientsInAll(males,PWIDS,havingArtStartDateDuringQuarter),"");
 
        addIndicator(dsd,"PIPf","PIPs TX Curr on ART female",df.getPatientsInAll(females,PIPS,havingArtStartDateDuringQuarter),"");
        addIndicator(dsd,"PIPm","PIPs TX Curr on ART male",df.getPatientsInAll(males,PIPS,havingArtStartDateDuringQuarter),"");
+
+        addIndicator(dsd,"PWIDS","PWIDs TX Curr on ART",df.getPatientsInAll(PWIDS,havingArtStartDateDuringQuarter),"");
+        addIndicator(dsd,"PIPS","PIPs TX Curr on ART",df.getPatientsInAll(PIPS,havingArtStartDateDuringQuarter),"");
+       addIndicator(dsd,"TOTAL_KP","TOTAL KP",df.getPatientsInAll(df.getPatientsInAny(PIPS,PWIDS),havingArtStartDateDuringQuarter),"");
+
 
         return rd;
     }
@@ -195,6 +209,6 @@ public class SetupMERTxNew2019Report extends UgandaEMRDataExportManager {
 
     @Override
     public String getVersion() {
-        return "0.1.4";
+        return "0.1.7";
     }
 }

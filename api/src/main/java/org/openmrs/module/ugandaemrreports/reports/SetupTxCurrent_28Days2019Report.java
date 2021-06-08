@@ -54,6 +54,10 @@ public class SetupTxCurrent_28Days2019Report extends UgandaEMRDataExportManager 
         return "f9610dc0-095e-47d9-be1c-06dc0e0818f7";
     }
 
+    public String getJSONDesignUuid() {
+        return "1fdf9fa1-d9b4-48a6-b235-3994f9df30cf";
+    }
+
     @Override
     public String getUuid() {
         return "8dafdc32-97b7-4f49-828e-475cd4f09669";
@@ -80,7 +84,7 @@ public class SetupTxCurrent_28Days2019Report extends UgandaEMRDataExportManager 
 
     @Override
     public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
-        return Arrays.asList(buildReportDesign(reportDefinition));
+        return Arrays.asList(buildReportDesign(reportDefinition),buildJSONReportDesign(reportDefinition));
     }
 
     /**
@@ -93,6 +97,10 @@ public class SetupTxCurrent_28Days2019Report extends UgandaEMRDataExportManager 
     @Override
     public ReportDesign buildReportDesign(ReportDefinition reportDefinition) {
         return createExcelTemplateDesign(getExcelDesignUuid(), reportDefinition, "MER_TX_CURRENT_2019.xls");
+    }
+
+    public ReportDesign buildJSONReportDesign(ReportDefinition reportDefinition) {
+        return createJSONTemplateDesign(getJSONDesignUuid(), reportDefinition, "MER_TX_CURRENT_2019.json");
     }
 
     @Override
@@ -142,8 +150,14 @@ public class SetupTxCurrent_28Days2019Report extends UgandaEMRDataExportManager 
         setupTxNewReport.addGender(dsd,"a","TX Curr on ART female",beenOnArtDuringQuarter);
         setupTxNewReport.addGender(dsd,"b","TX Curr on ART male",beenOnArtDuringQuarter);
 
+        setupTxNewReport.addIndicator(dsd,"TOTAL","TX Curr TOTAL",beenOnArtDuringQuarter,"");
+
         setupTxNewReport.addIndicator(dsd,"PWIDSf","PWIDs TX Curr on ART female",df.getPatientsInAll(females,PWIDS,beenOnArtDuringQuarter),"");
         setupTxNewReport.addIndicator(dsd,"PWIDSm","PWIDs TX Curr on ART male",df.getPatientsInAll(males,PWIDS,beenOnArtDuringQuarter),"");
+
+        setupTxNewReport.addIndicator(dsd,"TOTAL_KP","PWIDs and PIP Tx Curr ",df.getPatientsInAll(df.getPatientsInAny(PWIDS,PIPS),beenOnArtDuringQuarter),"");
+        setupTxNewReport.addIndicator(dsd,"PWIDS","PWIDs TX Curr on ART ",df.getPatientsInAll(PWIDS,beenOnArtDuringQuarter),"");
+        setupTxNewReport.addIndicator(dsd,"PIPS","PWIDs TX Curr on ART ",df.getPatientsInAll(PIPS,beenOnArtDuringQuarter),"");
 
         setupTxNewReport.addIndicator(dsd,"PIPf","PIPs TX Curr on ART female",df.getPatientsInAll(females,PIPS,beenOnArtDuringQuarter),"");
         setupTxNewReport.addIndicator(dsd,"PIPm","PIPs TX Curr on ART male",df.getPatientsInAll(males,PIPS,beenOnArtDuringQuarter),"");
@@ -175,6 +189,6 @@ public class SetupTxCurrent_28Days2019Report extends UgandaEMRDataExportManager 
 
     @Override
     public String getVersion() {
-        return "0.3.5";
+        return "0.3.6";
     }
 }

@@ -1,0 +1,635 @@
+{
+    "resourceType": "MeasureReport",
+    "id": "MER-TX-Indicators",
+    "status": "complete",
+    "type": "summary",
+    "measure": "https://ugisl.mets.or.ug/Measure/mer-tx-indicators",
+    "reporter": {
+        "reference": "Organisation/MK"
+    },
+    "period": {
+        "start": "#parameter.startDate|YYYY-MM-dd#",
+        "end": "#parameter.endDate|YYYY-MM-dd#"
+    },
+    "group": [
+        {
+            "code": {
+                "coding": [
+                    {
+                        "code": "ADX_TX_CURR_AGE_GRP_SEX"
+                    }
+                ]
+            },
+            "measureScore": {
+                "value": #TOTAL#
+            },
+            "stratifier": [
+                {
+                    "code": [
+                        {
+                            "coding": [
+                                {
+                                    "code": "165816005",
+                                    "display": "TX_CURR disaggregated by AGE GROUP and SEX"
+                                }
+                            ]
+                        }
+                    ],
+                    "stratum": [
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P0Y--P1Y:F",
+                                        "display": "< 1 year Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #2a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P0Y--P1Y:M",
+                                        "display": "<1 year Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #2b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P1Y--P5Y:F",
+                                        "display": "1­-4 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #3a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P1Y--P5Y:M",
+                                        "display": "1­-4 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #3b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P5Y--P10Y:F",
+                                        "display": "5-9 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #4a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P5Y--P10Y:M",
+                                        "display": "5-9 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #4b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P10Y--P15Y:F",
+                                        "display": "10-14 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #5a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P10Y--P15Y:M",
+                                        "display": "10-14 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #5b#
+                            }
+                        }, 
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P15Y--P20Y:F",
+                                        "display": "15-19 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #6a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P15Y--P20Y:M",
+                                        "display": "15-19 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #6b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P20Y--P25Y:F",
+                                        "display": "20-24 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #7a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P20Y--P25Y:M",
+                                        "display": "20-24 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #7b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P25Y--P30Y:F",
+                                        "display": "25-29 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #8a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P25Y--P30Y:M",
+                                        "display": "25-29 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #8b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P30Y--P35Y:F",
+                                        "display": "30-34 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #9a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P30Y--P35Y:M",
+                                        "display": "30-34 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #9b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P35Y--P40Y:F",
+                                        "display": "35-39 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #10a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P35Y--P40Y:M",
+                                        "display": "35-39 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #10b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P14Y--P45Y:F",
+                                        "display": "40-44 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #11a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P40Y--P45Y:M",
+                                        "display": "40-44 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #11b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P45Y--P50Y:F",
+                                        "display": "45-49 years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #12a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P45Y--P50Y:M",
+                                        "display": "45-49 years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #12b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P50Y--P9999Y:F",
+                                        "display": "50+ years Female"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #13a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P50Y--P9999Y:M",
+                                        "display": "50+ years Male"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #13b#
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "code": {
+                "coding": [
+                    {
+                        "code": "ADX_TX_NEW_KP",
+                        "display": "Total number of KP newly enrolled on ART"
+                    }
+                ]
+            },
+            "measureScore": {
+                "value": #TOTAL_KP#
+            },
+            "stratifier": [
+                {
+                    "code": [
+                        {
+                            "coding": [
+                                {
+                                    "code": "KP",
+                                    "display": "TX_NEW Disaggregated by key population type"
+                                }
+                            ]
+                        }
+                    ],
+                    "stratum": [
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "PWID",
+                                        "display": "People who inject Drugs"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #PWIDS#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "MSM",
+                                        "display": "Men who have sex with men"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": 0
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "TG",
+                                        "display": "Transgender people"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": 0
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "FSW",
+                                        "display": "Female Sex Workers"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": 0
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "PIP",
+                                        "display": "People in prisons and other enclosed settings (Incarcerated Population)"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #PIPS#
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "code": {
+                "coding": [
+                    {
+                        "code": "ADX_TX_CURR_ARV_DISPENSED",
+                        "display": "Number of adults and children currently receiving antiretroviral therapy (ART) disaggregated by ARV Dispensing Quantity by Coarse Age/Sex"
+                    }
+                ]
+            },
+            "measureScore": {
+                "value": 0
+            },
+            "stratifier": [
+                {
+                    "code": [
+                        {
+                            "coding": [
+                                {
+                                    "code": "PERIOD_ARV_DISP:AGE_GRP:SEX",
+                                    "display": "Number of adults and children currently receiving antiretroviral therapy (ART) disaggregated by ARV Dispensing Quantity by Coarse Age/Sex"
+                                }
+                            ]
+                        }
+                    ],
+                    "stratum": [
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P0M--3M:P0Y--15Y:F",
+                                        "display": "<3 months of ARVs dispensed by <15yrs Females"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #14a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P0M--3M:P0Y--15Y:M",
+                                        "display": "<3 months of ARVs dispensed by <15yrs Males"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #14b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P0M--3M:P15Y--P9999Y:F",
+                                        "display": "<3 months of ARVs dispensed by 15+yrs Females"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #15a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P0M--3M:P15Y--P9999Y:M",
+                                        "display": "<3 months of ARVs dispensed by 15+yrs males"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #15b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P3M--6M:P0Y--15Y:F",
+                                        "display": "3-5 months of ARVs dispensed to patient by <15yrs females"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #16a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P3M--6M:P0Y--15Y:M",
+                                        "display": "3-5 months of ARVs dispensed to patient by <15yrs Males"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #16b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P3M--6M:P15Y--P9999Y:F",
+                                        "display": "3-5 months of ARVs dispensed to patient by 15+yrs Females"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #17a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P3M--6M:P15Y--P9999Y:M",
+                                        "display": "3-5 months of ARVs dispensed to patient by 15+yrs Males"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #17b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P6M--9999M:P0Y--15Y:F",
+                                        "display": "6 or more months of ARVs dispensed to patient by <15yrs Females"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #18a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P6M--9999M:P0Y--15Y:M",
+                                        "display": "6 or more months of ARVs dispensed to patient by <15yrs Males"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #18b#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P6M--9999M:P15Y--P9999Y:F",
+                                        "display": "6 or more months of ARVs dispensed to patient by 15+yrs"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #19a#
+                            }
+                        },
+                        {
+                            "value": {
+                                "coding": [
+                                    {
+                                        "code": "P6M--9999M:P15Y--P9999Y:M",
+                                        "display": "6 or more months of ARVs dispensed to patient by 15+yrs"
+                                    }
+                                ]
+                            },
+                            "measureScore": {
+                                "value": #19b#
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
