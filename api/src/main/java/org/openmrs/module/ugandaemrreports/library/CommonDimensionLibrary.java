@@ -1,7 +1,6 @@
 package org.openmrs.module.ugandaemrreports.library;
 
-import org.openmrs.Location;
-import org.openmrs.Program;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -29,6 +28,9 @@ public class CommonDimensionLibrary extends BaseDefinitionLibrary<CohortDefiniti
     private CommonCohortDefinitionLibrary cohortDefinitionLibrary;
     @Autowired
     private HIVCohortDefinitionLibrary hivCohortDefinitionLibrary;
+
+    @Autowired
+    TBCohortDefinitionLibrary tbCohortDefinitionLibrary;
 
     @Autowired
     private DataFactory df;
@@ -540,6 +542,16 @@ public class CommonDimensionLibrary extends BaseDefinitionLibrary<CohortDefiniti
         return  program;
     }
 
+    public ProgramWorkflow getProgramWorkFlow(String uuid){
+        ProgramWorkflow program=Context.getProgramWorkflowService().getWorkflowByUuid(uuid);
+        return  program;
+    }
+
+    public ProgramWorkflowState getProgramState(String uuid){
+        ProgramWorkflowState program=Context.getProgramWorkflowService().getStateByUuid(uuid);
+        return  program;
+    }
+
     public Location getLocationByUuid(String uuid){
         Location location=Context.getLocationService().getLocationByUuid(uuid);
         return  location;
@@ -726,5 +738,27 @@ public class CommonDimensionLibrary extends BaseDefinitionLibrary<CohortDefiniti
         ageGenderDimension.addCohortDefinition("female",Mapped.mapStraightThrough(females));
         return ageGenderDimension;
 
+    }
+
+    public CohortDefinitionDimension getPatientTypeDimension(){
+        CohortDefinitionDimension patientTypeDimension= new CohortDefinitionDimension();
+
+        CohortDefinition newPatients = tbCohortDefinitionLibrary.getNewPatientsDuringPeriod();
+        CohortDefinition relapsedPatients = tbCohortDefinitionLibrary.getRelapsedPatientsDuringPeriod();
+        CohortDefinition treatedAfterLTFP = tbCohortDefinitionLibrary.getTreatedAfterLTFPPatientsDuringPeriod();
+        CohortDefinition treatedAfterFailure = tbCohortDefinitionLibrary.getTreatedAfterFailurePatientsDuringPeriod();
+        CohortDefinition treatementHistoryUnknown = tbCohortDefinitionLibrary.getTreatmentHistoryUnknownPatientsDuringPeriod();
+        CohortDefinition referredFromCommunity = tbCohortDefinitionLibrary.getPatientsReferredFromComunity();
+        patientTypeDimension.addParameter(ReportingConstants.START_DATE_PARAMETER);
+        patientTypeDimension.addParameter(ReportingConstants.END_DATE_PARAMETER);
+
+        patientTypeDimension.addCohortDefinition("newPatients", Mapped.mapStraightThrough(newPatients));
+        patientTypeDimension.addCohortDefinition("relapsedPatients", Mapped.mapStraightThrough(relapsedPatients));
+        patientTypeDimension.addCohortDefinition("treatedAfterLTFP", Mapped.mapStraightThrough(treatedAfterLTFP));
+        patientTypeDimension.addCohortDefinition("treatedAfterFailure", Mapped.mapStraightThrough(treatedAfterFailure));
+        patientTypeDimension.addCohortDefinition("treatementHistoryUnknown", Mapped.mapStraightThrough(treatementHistoryUnknown));
+        patientTypeDimension.addCohortDefinition("referred", Mapped.mapStraightThrough(referredFromCommunity));
+
+        return patientTypeDimension;
     }
 }
