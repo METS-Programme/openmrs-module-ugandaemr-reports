@@ -1,16 +1,16 @@
 package org.openmrs.module.ugandaemrreports.reports;
 
+import org.openmrs.Program;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.ugandaemrreports.data.converter.EmctCodesDataConverter;
 import org.openmrs.module.ugandaemrreports.definition.data.converter.BirthDateConverter;
+import org.openmrs.module.ugandaemrreports.definition.dataset.definition.UgandaEMRMobileDatasetDefinition;
 import org.openmrs.module.ugandaemrreports.library.*;
 import org.openmrs.module.ugandaemrreports.metadata.HIVMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Daily Appointments List report
@@ -71,7 +70,7 @@ public class SetUpMobileAppointmentLists extends UgandaEMRDataExportManager {
 
     @Override
     public String getName() {
-        return "Appointments List";
+        return "Mobile Appointments List";
     }
 
     @Override
@@ -84,6 +83,7 @@ public class SetUpMobileAppointmentLists extends UgandaEMRDataExportManager {
         List<Parameter> l = new ArrayList<Parameter>();
         l.add(df.getStartDateParameter());
         l.add(df.getEndDateParameter());
+        l.add(new Parameter("programs", "programs", Program.class, List.class, null,null,false));
         return l;
     }
 
@@ -104,7 +104,6 @@ public class SetUpMobileAppointmentLists extends UgandaEMRDataExportManager {
      * Build the report design for the specified report, this allows a user to override the report design by adding
      * properties and other metadata to the report design
      *
-     * @param reportDefinition
      * @return The report design
      */
 
@@ -119,7 +118,7 @@ public class SetUpMobileAppointmentLists extends UgandaEMRDataExportManager {
         rd.setDescription(getDescription());
         rd.setParameters(getParameters());
 
-        PatientDataSetDefinition dsd = new PatientDataSetDefinition();
+        UgandaEMRMobileDatasetDefinition dsd = new UgandaEMRMobileDatasetDefinition();
 
         CohortDefinition appointmentList = df.getPatientsWhoseObsValueDateIsBetweenStartDateAndEndDate(hivMetadata.getReturnVisitDate(), Arrays.asList(hivMetadata.getARTEncounterEncounterType()), BaseObsCohortDefinition.TimeModifier.ANY);
         CohortDefinition missedAppointmentLists = df.getMissedAppointment();
@@ -153,13 +152,11 @@ public class SetUpMobileAppointmentLists extends UgandaEMRDataExportManager {
         addColumn(dsd, "Telephone", basePatientData.getTelephone());
 
         rd.addDataSetDefinition("APPOINTMENT_LIST", Mapped.mapStraightThrough(dsd));
-        rd.setBaseCohortDefinition(Mapped.mapStraightThrough(patientsWithAppointmentsAndMissedAppointments));
-
         return rd;
     }
 
     @Override
     public String getVersion() {
-        return "2.0.0";
+        return "2.1.2";
     }
 }
