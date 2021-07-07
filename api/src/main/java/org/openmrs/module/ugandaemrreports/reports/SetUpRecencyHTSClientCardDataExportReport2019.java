@@ -25,6 +25,7 @@ import org.openmrs.module.ugandaemrreports.data.converter.ObsDataConverter;
 import org.openmrs.module.ugandaemrreports.data.converter.PersonAttributeDataConverter;
 import org.openmrs.module.ugandaemrreports.definition.data.definition.CalculationDataDefinition;
 import org.openmrs.module.ugandaemrreports.definition.dataset.definition.GlobalPropertyParametersDatasetDefinition;
+import org.openmrs.module.ugandaemrreports.library.CommonDatasetLibrary;
 import org.openmrs.module.ugandaemrreports.library.DataFactory;
 import org.openmrs.module.ugandaemrreports.reporting.calculation.smc.SMCEncounterDateCalculation;
 import org.openmrs.module.ugandaemrreports.reporting.dataset.definition.SharedDataDefintion;
@@ -68,7 +69,7 @@ public class SetUpRecencyHTSClientCardDataExportReport2019 extends UgandaEMRData
 
 	@Override
 	public String getVersion() {
-		return "1.1.0";
+		return "1.1.5";
 	}
 
 	/**
@@ -117,6 +118,7 @@ public class SetUpRecencyHTSClientCardDataExportReport2019 extends UgandaEMRData
 		rd.setDescription(getDescription());
 		rd.setParameters(getParameters());
 		rd.addDataSetDefinition("HTSCARDDATAEXPORT", Mapped.mapStraightThrough(dataSetDefinition()));
+		rd.addDataSetDefinition("HTSCARDDATAEXPORT", Mapped.mapStraightThrough(CommonDatasetLibrary.settings()));
 		return rd;
 	}
 	private Concept getConcept(String uuid) {
@@ -136,6 +138,7 @@ public class SetUpRecencyHTSClientCardDataExportReport2019 extends UgandaEMRData
 		//start constructing of the dataset
 		PersonAttributeType maritalStatus = Context.getPersonService().getPersonAttributeTypeByUuid("dce0c134-30ab-102d-86b0-7a5022ba4115");
 
+		dsd.addColumn("encounter_uuid", df.getEncounterUuid(), (String) null);
 		dsd.addColumn("serial_number", sdd.definition("serialNo",  getConcept("1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")), "onOrAfter=${startDate},onOrBefore=${endDate}", new ObsDataConverter());
 		dsd.addColumn("visit_date", df.getHTSVisitDate(), (String)null, new DateConverter("yyyy-MM-dd"));
 		dsd.addColumn("health_unit_name",df.getPreferredAddress("address4") ,(String)null);
