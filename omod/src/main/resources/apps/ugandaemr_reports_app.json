@@ -508,6 +508,15 @@
         "requiredPrivilege": "App: ugandaemrreports.recencyHTSClientCardDataExport"
       },
       {
+        "id": "HMIS 105 Section 2",
+        "extensionPointId": "org.openmrs.module.ugandaemr.reports.monthly",
+        "type": "link",
+        "label": "HMIS 105 Section 2: ANTENANTAL",
+        "url": "reportingui/runReport.page?reportDefinition=caec6908-72e1-4978-8007-13c551d23e5f",
+        "order": 5,
+        "requiredPrivilege": "App: ugandaemrreports.HMIS105"
+      },
+      {
         "id": "HMIS 105 Section 4",
         "extensionPointId": "org.openmrs.module.ugandaemr.reports.monthly",
         "type": "link",

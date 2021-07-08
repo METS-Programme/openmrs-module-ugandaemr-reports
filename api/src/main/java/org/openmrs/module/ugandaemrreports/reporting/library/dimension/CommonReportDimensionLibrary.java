@@ -158,6 +158,32 @@ public class CommonReportDimensionLibrary {
         dim.addCohortDefinition("GreaterThan50yrs", map(commonCohortLibrary.agedAtLeast(50), "effectiveDate=${endDate}"));
         return dim;
     }
+
+    public CohortDefinitionDimension MCHAgeGroups() {
+        CohortDefinitionDimension ageDisaggregation = new CohortDefinitionDimension();
+        ageDisaggregation.setName("age groups (15-19yrs,20-24yrs,25-29yrs,30-34yrs,35-39yrs,40-44yrs,45-49yrs,>50yrs)");
+        ageDisaggregation.addCohortDefinition("Between15And19yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(15, 19), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between20And24yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(20, 24), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between25And29yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(25, 29), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between30And34yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(30, 34), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between35And39yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(35, 39), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between40And44yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(40, 44), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between45And49yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(45, 49), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("GreaterThan50yrs", map(commonCohortLibrary.agedAtLeast(50), "effectiveDate=${endDate}"));
+        return ageDisaggregation;
+    }
+
+    public CohortDefinitionDimension ANCAgeGroups() {
+        CohortDefinitionDimension ageDisaggregation = new CohortDefinitionDimension();
+        ageDisaggregation.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+        ageDisaggregation.setName("age groups (Below15,15-19years,20-24yrs,25-49yrs,>50yrs)");
+        ageDisaggregation.addCohortDefinition("Below15", map(commonCohortLibrary.agedAtLeastAgedAtMost(0, 14), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between15And19yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(15, 19), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between20And24yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(20, 24), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("Between25And49yrs", map(commonCohortLibrary.agedAtLeastAgedAtMost(25, 49), "effectiveDate=${endDate}"));
+        ageDisaggregation.addCohortDefinition("GreaterThan50yrs", map(commonCohortLibrary.agedAtLeast(50), "effectiveDate=${endDate}"));
+        return ageDisaggregation;
+    }
 	
 	/**
      * Dimension for age using 5 age group for smc

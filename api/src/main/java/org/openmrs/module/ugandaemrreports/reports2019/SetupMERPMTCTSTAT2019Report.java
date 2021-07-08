@@ -1,15 +1,12 @@
 package org.openmrs.module.ugandaemrreports.reports2019;
 
-import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.ugandaemrreports.library.*;
-import org.openmrs.module.ugandaemrreports.metadata.HIVMetadata;
 import org.openmrs.module.ugandaemrreports.reporting.utils.ReportUtils;
 import org.openmrs.module.ugandaemrreports.reports.SetupPMTCTSTATReport;
 import org.openmrs.module.ugandaemrreports.reports.UgandaEMRDataExportManager;
@@ -113,7 +110,7 @@ public class SetupMERPMTCTSTAT2019Report extends UgandaEMRDataExportManager {
         setupPMTCTSTATReport.addGender(dsd,"b","Total  Pregnant With known HIV- status at entry (TRK)", ReportUtils.map(indicatorLibrary.pregnantTrkAt1stANC(),params),"female"); ;
         setupPMTCTSTATReport.addGender(dsd,"c","Pregnant Women tested HIV+ for 1st time this pregnancy (TRR) at 1st visit ",ReportUtils.map(indicatorLibrary.pregnantWomenNewlyTestedForHivThisPregnancyTRRAt1stVisit(),params),"female");
         setupPMTCTSTATReport.addGender(dsd,"d","Pregnant Women tested HIV- for 1st time this pregnancy (TR) at 1st visit",ReportUtils.map(indicatorLibrary.pregnantWomenNewlyTestedNegativeForHivThisPregnancyTRAt1stVisit(),params),"female");
-        setupPMTCTSTATReport.addGender(dsd,"e","Total  Number of NEW ANC Clients",ReportUtils.map(indicatorLibrary.anc1stVisit(),params),"female");
+        setupPMTCTSTATReport.addGender(dsd,"e","Total  Number of NEW ANC Clients",ReportUtils.map(indicatorLibrary.ANCFirstContact(),params),"female");
 
         return rd;
     }

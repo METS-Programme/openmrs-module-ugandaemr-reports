@@ -1,7 +1,5 @@
 package org.openmrs.module.ugandaemrreports.reports;
 
-import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -128,7 +126,7 @@ public class SetupPMTCTSTATReport extends UgandaEMRDataExportManager {
 
         addGender(dsd,"a","Total  Pregnant With known HIV- status at entry (TRK)",ReportUtils.map(indicatorLibrary.pregnantTrkAt1stANC(),params),"female"); ;
         addGender(dsd,"b","Total  Pregnant Known HIV positives at entry(TRRK)",ReportUtils.map(indicatorLibrary.pregnantTrrkAt1stANC(),params),"female");
-        addGender(dsd,"e","Total  Number of NEW ANC Clients",ReportUtils.map(indicatorLibrary.anc1stVisit(),params),"female");
+        addGender(dsd,"e","Total  Number of NEW ANC Clients",ReportUtils.map(indicatorLibrary.ANCFirstContact(),params),"female");
         addGender(dsd,"d","Pregnant Women tested HIV+ for 1st time this pregnancy (TRR) at any visit ",ReportUtils.map(indicatorLibrary.pregnantWomenNewlyTestedForHivThisPregnancyTRRAt1stVisit(),params),"female");
         addGender(dsd,"c","Pregnant Women tested HIV- for 1st time this pregnancy (TRR) at 1st visit",ReportUtils.map(indicatorLibrary.pregnantWomenNewlyTestedNegativeForHivThisPregnancyTRAt1stVisit(),params),"female");
 

@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -82,7 +80,7 @@ public class SetupWeeklyOptionBPlusSMSReport extends UgandaEMRDataExportManager 
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setParameters(getParameters());
 		
-		dsd.addColumn("1a","Total No ANC Visits 1", ReportUtils.map(moh105IndicatorLibrary.anc1stVisit(), params),
+		dsd.addColumn("1a","Total No ANC Visits 1", ReportUtils.map(moh105IndicatorLibrary.ANCFirstContact(), params),
 				(String) null);
 		dsd.addColumn("2b","Total No ANC Tested",
 				ReportUtils.map(moh105IndicatorLibrary.pregnantWomenNewlyTestedForHivThisPregnancyTRAndTRR(), params),
@@ -91,7 +89,7 @@ public class SetupWeeklyOptionBPlusSMSReport extends UgandaEMRDataExportManager 
 						.map(moh105IndicatorLibrary.pregnantWomenNewlyTestedForHivThisPregnancyAndTestedHIVPositive(),
 								params),
 				(String) null);
-		dsd.addColumn("4d","Total No ANC Known Positive",  ReportUtils.map(moh105IndicatorLibrary.pregnantTrkTrrk(),
+		dsd.addColumn("4d","Total No ANC Known Positive",  ReportUtils.map(moh105IndicatorLibrary.pregnantWomenWithKnownHIVStatusBeforeFirstANCVisit(),
                 params),
 				(String) null);
 		dsd.addColumn("5e","Total Initiating OptionB+",
