@@ -621,7 +621,7 @@ public class HIVCohortDefinitionLibrary extends BaseDefinitionLibrary<CohortDefi
     }
 
     public static SqlCohortDefinition getPatientsWithEncountersBeforeEndDateThatHaveReturnVisitDatesByStartDate() {
-        SqlCohortDefinition cohortDefinition = new SqlCohortDefinition("select distinct patient_id from encounter e inner  join obs o on e.encounter_id = o.encounter_id  inner join encounter_type t on  t.encounter_type_id =e.encounter_type where encounter_datetime <= :endDate and t.uuid = '8d5b2be0-c2cc-11de-8d13-0010c6dffd0f' and  o.concept_id=5096 and o.value_datetime >= :startDate and e.voided=0;");
+        SqlCohortDefinition cohortDefinition = new SqlCohortDefinition("select distinct patient_id from encounter e inner  join obs o on e.encounter_id = o.encounter_id  inner join encounter_type t on  t.encounter_type_id =e.encounter_type where encounter_datetime <= :endDate and t.uuid = '8d5b2be0-c2cc-11de-8d13-0010c6dffd0f' and  o.concept_id=5096 and o.value_datetime >= :startDate and e.voided=0 and o.voided=0;");
         cohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
         cohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -635,16 +635,36 @@ public class HIVCohortDefinitionLibrary extends BaseDefinitionLibrary<CohortDefi
 
     public CohortDefinition getPatientsTxLostToFollowupByDays(String days) {
         SqlCohortDefinition cohortDefinition = new SqlCohortDefinition("select t.patient_id from (select patient_id, max(value_datetime) return_visit_date,datediff(:endDate,max(value_datetime)) ltfp_days from encounter e inner  join obs o on e.encounter_id = o.encounter_id inner join encounter_type t on  t.encounter_type_id =e.encounter_type where encounter_datetime <=:endDate " +
-                "and t.uuid = '8d5b2be0-c2cc-11de-8d13-0010c6dffd0f' and  o.concept_id=5096 and o.value_datetime >= :startDate and e.voided=0 group by patient_id) as t  where ltfp_days >=" + days +" ;");
+                "and t.uuid = '8d5b2be0-c2cc-11de-8d13-0010c6dffd0f' and  o.concept_id=5096 and o.value_datetime >= :startDate and e.voided=0 and o.voided=0 group by patient_id) as t  where ltfp_days >=" + days +" ;");
         cohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
         cohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+        CohortDefinition lostClientsWithInPeriod = df.convert(cohortDefinition,ObjectUtil.toMap("startDate=startDate,endDate=endDate"));
 
-        return df.convert(cohortDefinition,ObjectUtil.toMap("startDate=startDate,endDate=endDate"));
+        //adding clients from previous period that will turn lost with in reporting period
+        CohortDefinition clientsFromPreviousQuarterThatWIllBeLostIfTheyDontAppearWithinReportingPeriod =getPatientsWhoseLatestReturnVisitDateBeforeReportingPeriodExpiresDuringReportingPeriodToBeConsideredLostAfterNumberOfDays(days);
+        CohortDefinition hasEncounterWithInReportingPeriod = getArtPatientsWithEncounterOrSummaryPagesBetweenDates();
+        CohortDefinition lostClientsFromPreviousQuarter = df.getPatientsNotIn(clientsFromPreviousQuarterThatWIllBeLostIfTheyDontAppearWithinReportingPeriod,hasEncounterWithInReportingPeriod);
+        return df.getPatientsInAny(lostClientsWithInPeriod,lostClientsFromPreviousQuarter);
 
     }
 
     public  CohortDefinition getPatientsTxLostToFollowupByDaysInPreviousQuarter(String days,String olderThan) {
         return df.convert(getPatientsTxLostToFollowupByDays(days),ObjectUtil.toMap("startDate=startDate-" +olderThan +",endDate=endDate-"+olderThan));
+    }
+
+    /**
+     * This method looks at patients whose next return visit date by the start of period is not
+     * yet considered lost by the days  passed as @param days but will be lost in considered lost in the current
+     * reporting period , if they dont turn up by the end of period
+     */
+
+    public CohortDefinition getPatientsWhoseLatestReturnVisitDateBeforeReportingPeriodExpiresDuringReportingPeriodToBeConsideredLostAfterNumberOfDays(String days){
+        SqlCohortDefinition cohortDefinition = new SqlCohortDefinition("select t.patient_id from (select patient_id, max(value_datetime) return_visit_date,datediff(:startDate,max(value_datetime)) ltfp_days from encounter e\n" +
+                "    inner  join obs o on e.encounter_id = o.encounter_id inner join encounter_type t on  t.encounter_type_id =e.encounter_type where encounter_datetime <=:startDate and encounter_datetime>= DATE_SUB(:startDate, INTERVAL 3 month )\n" +
+                "                and t.uuid = '8d5b2be0-c2cc-11de-8d13-0010c6dffd0f' and  o.concept_id=5096 and e.voided=0 and o.voided=0 group by patient_id) as t  where return_visit_date < :startDate and  ltfp_days <" + days +" ;");
+        cohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+
+        return df.convert(cohortDefinition,ObjectUtil.toMap("startDate=startDate"));
     }
 
     public static  SqlCohortDefinition getPatientsHavingAppointmentToday() {
