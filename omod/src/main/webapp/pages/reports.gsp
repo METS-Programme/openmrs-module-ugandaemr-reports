@@ -9,6 +9,7 @@
     def quarterly = appFrameworkService.getExtensionsForCurrentUser("org.openmrs.module.ugandaemr.reports.quarterly")
     def integration = appFrameworkService.getExtensionsForCurrentUser("org.openmrs.module.ugandaemr.integrationdataexports")
     def mer = appFrameworkService.getExtensionsForCurrentUser("org.openmrs.module.ugandaemr.mer")
+    def mer_patient_lists = appFrameworkService.getExtensionsForCurrentUser("org.openmrs.module.ugandaemr.mer_patient_lists")
     def ewi = appFrameworkService.getExtensionsForCurrentUser("org.openmrs.module.ugandaemr.ewi")
     def contextModel = [:]
 %>
@@ -28,7 +29,7 @@
     width: 30%;
 }
 </style>
-<h2>UgandaEMR Reports - HMIS Tools 2019 Version</h2>
+<h2>UgandaEMR Reports</h2>
 <div class="dashboard clear">
     <div class="info-container column">
         <% if (overview) { %>
@@ -101,11 +102,26 @@
     <div class="info-container column">
         <% if (mer) { %>
         <div class="info-section">
-            <div class="info-header"><h3>Mer Reports</h3></div>
+            <div class="info-header"><h3>MER Indicator Reports</h3></div>
 
             <div class="info-body">
                 <ul>
                     <% mer.each { %>
+                    <li>
+                        ${ui.includeFragment("uicommons", "extension", [extension: it, contextModel: contextModel])}
+                    </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+        <% } %>
+        <% if (mer_patient_lists) { %>
+        <div class="info-section">
+            <div class="info-header"><h3>Patient Lists for MER Indicator Reports</h3></div>
+
+            <div class="info-body">
+                <ul>
+                    <% mer_patient_lists.each { %>
                     <li>
                         ${ui.includeFragment("uicommons", "extension", [extension: it, contextModel: contextModel])}
                     </li>

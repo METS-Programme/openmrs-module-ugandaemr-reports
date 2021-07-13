@@ -112,6 +112,10 @@ public class HIVPatientDataLibrary extends BaseDefinitionLibrary<PatientDataDefi
         return df.getObsByEndDate(hivMetadata.getReturnVisitDate(), null, TimeQualifier.LAST, df.getObsValueDatetimeConverter());
     }
 
+    public PatientDataDefinition getLatestExpectedReturnDateBeforeStartDate() {
+        return df.getObsBeforeDate(hivMetadata.getReturnVisitDate(), null, TimeQualifier.LAST, df.getObsValueDatetimeConverter());
+    }
+
     public PatientDataDefinition getExpectedReturnDateDuringPeriod() {
         return df.getValueDatetimeObsDuringPeriod(hivMetadata.getReturnVisitDate(), null, TimeQualifier.LAST, df.getObsValueDatetimeConverter());
     }
@@ -149,6 +153,10 @@ public class HIVPatientDataLibrary extends BaseDefinitionLibrary<PatientDataDefi
     protected PatientDataDefinition getLastARTVisitEncounterByEndDate(DataConverter converter) {
         EncounterType arvInitial = hivMetadata.getARTEncounterPageEncounterType().get(0);
         return df.getLastEncounterOfTypeByEndDate(Arrays.asList(arvInitial), converter);
+    }
+
+    public PatientDataDefinition getLastARTVisitEncounterByEndOfPreviousPeriod(DataConverter converter) {
+        return df.getLastEncounterOfTypeByEndOfPreviousPeriod(hivMetadata.getARTEncounterPageEncounterType(), converter);
     }
 
 
