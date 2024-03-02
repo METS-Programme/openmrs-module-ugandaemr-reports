@@ -683,6 +683,10 @@ public class HIVMetadata extends ReportMetadata {
         return Context.getProgramWorkflowService().getStateByUuid(Metadata.ProgramState.HIV_PROGRAM_STATE_THIRD_LINE_REGIMEN);
     }
 
+    public ProgramWorkflowState getCRPDDPState() {
+        return Context.getProgramWorkflowService().getStateByUuid(Metadata.Concept.CDDP_PROGRAM_STATE_CRPDDP_STATE);
+    }
+
     public List<EncounterType> getSMCEncounterType() {
         List<EncounterType> l = new ArrayList<EncounterType>();
         l.add(MetadataUtils.existing(EncounterType.class, "244da86d-f80e-48fe-aba9-067f241905ee"));
