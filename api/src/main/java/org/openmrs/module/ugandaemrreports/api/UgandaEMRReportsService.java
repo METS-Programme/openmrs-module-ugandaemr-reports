@@ -4,6 +4,9 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.ugandaemrreports.model.Dashboard;
 import org.openmrs.module.ugandaemrreports.model.DashboardReportObject;
+import org.openmrs.reporting.AbstractReportObject;
+import org.openmrs.reporting.PatientSearchReportObject;
+import org.openmrs.reporting.ReportObjectWrapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -94,4 +97,6 @@ public interface UgandaEMRReportsService extends OpenmrsService {
 
 
     void executeFlatteningScript();
+
+    List<ReportObjectWrapper> getPatientSearches(String type);
 }

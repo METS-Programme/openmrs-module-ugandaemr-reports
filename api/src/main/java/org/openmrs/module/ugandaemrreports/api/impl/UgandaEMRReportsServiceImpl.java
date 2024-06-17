@@ -5,11 +5,13 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.ugandaemrreports.api.UgandaEMRReportsService;
-import org.openmrs.module.ugandaemrreports.api.db.UgandaEMRReportsDAO;
 import org.openmrs.module.ugandaemrreports.api.db.hibernate.HibernateUgandaEMRReportsDAO;
 import org.openmrs.module.ugandaemrreports.model.Dashboard;
 import org.openmrs.module.ugandaemrreports.model.DashboardReportObject;
-import org.springframework.stereotype.Repository;
+import org.openmrs.reporting.AbstractReportObject;
+import org.openmrs.reporting.PatientSearchReportObject;
+import org.openmrs.reporting.ReportObjectWrapper;
+
 
 import java.util.List;
 
@@ -82,5 +84,10 @@ public class UgandaEMRReportsServiceImpl extends BaseOpenmrsService implements U
 	@Override
 	public void executeFlatteningScript() {
 		dao.executeFlatteningScript();
+	}
+
+	@Override
+	public List<ReportObjectWrapper> getPatientSearches(String type) {
+		return dao.getReportObjects(type);
 	}
 }
