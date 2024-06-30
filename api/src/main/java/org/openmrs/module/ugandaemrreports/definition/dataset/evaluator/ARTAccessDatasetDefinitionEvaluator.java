@@ -60,7 +60,6 @@ public class ARTAccessDatasetDefinitionEvaluator implements DataSetEvaluator {
         q.append(dataQuery);
         List<Object[]> results = evaluationService.evaluateToList(q, context);
 
-        System.out.println(results.size()+" records");
         if(results.size()>0 && !results.isEmpty()) {
             Set<Object> encounterSet = new HashSet<>();
             for (Object[] object : results) {

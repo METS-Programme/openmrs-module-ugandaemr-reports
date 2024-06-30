@@ -658,6 +658,14 @@
         "order":15,
         "requiredPrivilege": "App: ugandaemrreports.recencyHTSClientCardDataExport"
       },{
+        "id": "ART Access Patient CheckList",
+        "extensionPointId": "org.openmrs.module.ugandaemr.integrationdataexports",
+        "type": "link",
+        "label": "ART Access Patient CheckList",
+        "url": "reportingui/runReport.page?reportDefinition=acb08bcb-9ec2-4856-b2c4-7c2f880c6b67",
+        "order":20,
+        "requiredPrivilege": "App: ugandaemrreports.recencyHTSClientCardDataExport"
+      },{
         "id": "HMIS PHAR 003:Dispensing Log",
         "extensionPointId": "org.openmrs.module.ugandaemr.reports.registers",
         "type": "link",
