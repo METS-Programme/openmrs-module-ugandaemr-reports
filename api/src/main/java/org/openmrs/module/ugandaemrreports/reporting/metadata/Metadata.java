@@ -299,7 +299,10 @@ public class Metadata {
         public static final String ASPHYXIA = "121397AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         public static final String SYPHILLS_TEST = "275a6f72-b8a4-4038-977a-727552f69cb8";
         public static final String SYPHILLS_TEST_PARTNER = "d8bc9915-ed4b-4df9-9458-72ca1bc2cd06";
-        public static final String ANC_VISIT_NUMBER = "c0b1b5f1-a692-49d1-9a69-ff901e07fa27";
+
+        public final static String CDDP_PROGRAM_STATE_CRPDDP_STATE = "a6a0ab45-b7dc-43b2-b28c-45a91f968ebf";
+
+            public static final String ANC_VISIT_NUMBER = "c0b1b5f1-a692-49d1-9a69-ff901e07fa27";
             public static final String FIRST_ANC_VISIT = "588ac57f-a4d0-47c2-9852-92502194ec4a";
             public static final String SECOND_ANC_VISIT = "a3ff912e-8298-4743-84cb-62e267c91b58";
             public static final String THIRD_ANC_VISIT = "6fd18b93-4c93-417c-9844-b53f467e9a13";
