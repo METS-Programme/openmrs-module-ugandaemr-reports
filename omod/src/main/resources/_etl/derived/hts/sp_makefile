@@ -1,0 +1,13 @@
+#############################################################################
+##################### HTS Fact Encounter Table SPs  #####################
+#############################################################################
+facts/sp_fact_encounter_hts_card.sql
+facts/sp_fact_encounter_hts_card_create.sql
+facts/sp_fact_encounter_hts_card_insert.sql
+facts/sp_fact_encounter_hts_card_query.sql
+facts/sp_fact_encounter_hts_card_update.sql
+
+#############################################################################
+###### A single stored procedure that invokes (CALLs) the above SPs #########
+#############################################################################
+sp_data_processing_derived_hts.sql

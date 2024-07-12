@@ -11,6 +11,7 @@ derived/art/sp_data_processing_derived_hiv_art.sql
 derived/art_card/sp_data_processing_derived_hiv_art_card.sql
 derived/non_suppressed/sp_data_processing_derived_non_suppressed.sql
 derived/IIT/sp_data_processing_derived_IIT.sql
+derived/hts/sp_data_processing_derived_hts.sql
 
 #############################################################################
 ############################ dimensions folder SPs  ############################

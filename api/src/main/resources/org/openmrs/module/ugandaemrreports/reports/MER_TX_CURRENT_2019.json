@@ -3,7 +3,6 @@
     "dataSet": "C8MSAKMS6hB",
     "completeDate": "#parameter.endDate|yyyy-MM-dd#",
     "orgUnit": "#S.dhis_uuid#",
-    "attributeOptionCombo": "WLGCLDRNCKH",
     "dataValues": [
       {
         "dataelement": "TX_CURR (N, <3 months of ARVs dispensed by <15yrs ,Sex) : Number of adults and children currently receiving ART",
