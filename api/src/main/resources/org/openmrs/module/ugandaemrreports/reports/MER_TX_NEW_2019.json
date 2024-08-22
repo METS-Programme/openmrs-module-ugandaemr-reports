@@ -3,7 +3,6 @@
         "dataSet": "C8MSAKMS6hB",
         "completeDate": "#parameter.endDate|yyyy-MM-dd#",
         "orgUnit": "#S.dhis_uuid#",
-        "attributeOptionCombo": "WLGCLDRNCKH",
         "dataValues": [
             {
                 "dataelementname": "TX_NEW (N, Breast feeding at initiation of ART ,Sex) : Number of adults and children newly enrolled on ART",

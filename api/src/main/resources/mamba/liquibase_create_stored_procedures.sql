@@ -2148,6 +2148,55 @@ BEGIN
   }
 },
   {
+  "report_name": "HTS_Encounter",
+  "flat_table_name": "mamba_flat_encounter_hts_card",
+  "encounter_type_uuid": "264daIZd-f80e-48fe-nba9-P37f2W1905Pv",
+  "concepts_locale": "en",
+  "table_columns": {
+    "family_member_accompanying_patient": "dc911cc1-30ab-102d-86b0-7a5022ba4115",
+    "other_specified_family_member": "6cb349b1-9f45-4c96-84c7-9d7037c6a056",
+    "delivery_model": "46648b1d-b099-433b-8f9c-3815ff1e0a0f",
+    "counselling_approach": "ff820a28-1adf-4530-bf27-537bfa9ce0b2",
+    "hct_entry_point": "720a1e85-ea1c-4f7b-a31e-cb896978df79",
+    "community_testing_point": "4f4e6d1d-4343-42cc-ba47-2319b8a84369",
+    "other_community_testing": "16820069-b4bf-4c47-9efc-408746e1636b",
+    "anc_visit_number": "c0b1b5f1-a692-49d1-9a69-ff901e07fa27",
+    "other_care_entry_point": "adf31c43-c9a0-4ab8-b53a-42097eb3d2b6",
+    "reason_for_testing": "2afe1128-c3f6-4b35-b119-d17b9b9958ed",
+    "reason_for_testing_other_specify": "8c628b5b-0045-40dc-a480-7e1518ffb256",
+    "special_category": "927563c5-cb91-4536-b23c-563a72d3f829",
+    "other_special_category": "eac4e9c2-a086-43fc-8d43-b5a4e02febb4",
+    "hiv_first_time_tester": "2766c090-c057-44f2-98f0-691b6d0336dc",
+    "previous_hiv_tests_date": "34c917f0-356b-40d0-b3d1-cf609517b5fc",
+    "months_since_first_hiv_aids_symptoms": "bf038497-df07-417d-9767-983e59983760",
+    "previous_hiv_test_results": "49ba801d-b6ff-47cd-8d29-e0ac8649cb7d",
+    "referring_health_facility": "a2397735-328f-432f-8c0d-d5c358516375",
+    "no_of_times_tested_in_last_12_months": "8037192e-8f0c-4af3-ad8d-ccd1dd6880ba",
+    "no_of_partners_in_the_last_12_months": "f1a6ede9-052e-4707-9cd8-a77fdeb2a02b",
+    "partner_tested_for_hiv": "adc0b1a1-39cf-412b-9ab0-28ec0f731220",
+    "partner_hiv_test_result": "ee802cf2-295b-4297-b53c-205f794294a5",
+    "pre_test_counseling_done": "193039f1-c378-4d81-bb72-653b66c69914",
+    "counselling_session_type": "b92b1777-4356-49b2-9c83-a799680dc7d4",
+    "current_hiv_test_result": "3d292447-d7df-417f-8a71-e53e869ec89d",
+    "hiv_syphilis_duo": "16091701-69b8-4bc7-82b3-b1726cf5a5df",
+    "consented_for_blood_drawn_for_testing": "0698a45b-771c-4d11-84ff-095598c8883c",
+    "hiv_recency_result": "141520BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+    "hiv_recency_viral_load_results": "5fd38584-21a7-4145-be4b-c126c5fb3d73",
+    "hiv_recency_viral_load_qualitative": "0787cd66-0816-46f1-ade4-eb75b166144e",
+    "hiv_recency_sample_id": "a0a6545b-8383-4235-a74f-417db2b580f3",
+    "hts_fingerprint_captured": "d7974eae-a0a0-4a0c-b5ed-f060af91665d",
+    "results_received_as_individual": "3437ae80-bcc5-41e2-887e-d56999a1b467",
+    "results_received_as_a_couple": "2aa9f0c1-3f7e-49cd-86ee-baac0d2d5f2d",
+    "couple_results": "94a5bd0a-b79d-421e-ab71-8e382eed100f",
+    "tb_suspect": "b80f04a4-1559-42fd-8923-f8a6d2456a04",
+    "presumptive_tb_case_referred": "c5da115d-f6a3-4d13-b182-c2e982a3a796",
+    "prevention_services_received": "73686a14-b55c-4b10-916d-fda2046b803f",
+    "other_prevention_services": "f3419b12-f6da-4aed-a001-e9f0bd078140",
+    "has_client_been_linked_to_care": "3d620422-0641-412e-ab31-5e45b98bc459",
+    "name_of_location_transferred_to": "dce015bb-30ab-102d-86b0-7a5022ba4115"
+  }
+},
+  {
   "report_name": "TB_Enrollment",
   "flat_table_name": "mamba_flat_encounter_tb_enrollment",
   "encounter_type_uuid": "334bf97e-28e2-4a27-8727-a5ce31c7cd66",
@@ -3554,6 +3603,24 @@ END~
 
         
 -- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_data_processing_derived_hts  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_hts;
+
+~
+CREATE PROCEDURE sp_data_processing_derived_hts()
+BEGIN
+-- $BEGIN
+CALL sp_fact_encounter_hts_card;
+
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_dim_concept_name  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -3664,48 +3731,101 @@ DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_insert;
 CREATE PROCEDURE sp_mamba_z_encounter_obs_insert()
 BEGIN
 -- $BEGIN
+    SET @report_encounter_uuid = '["8d5b2be0-c2cc-11de-8d13-0010c6dffd0f","6d88e370-f2ba-476b-bf1b-d8eaf3b1b67e","38cb2232-30fc-4b1f-8df1-47c795771ee9","8d5b27bc-c2cc-11de-8d13-0010c6dffd0f","264daIZd-f80e-48fe-nba9-P37f2W1905Pv","334bf97e-28e2-4a27-8727-a5ce31c7cd66","455bad1f-5e97-4ee9-9558-ff1df8808732"]';
 
-INSERT INTO mamba_z_encounter_obs
-(
-    encounter_id,
-    person_id,
-    obs_datetime,
-    encounter_datetime,
-    encounter_type_uuid,
-    obs_question_concept_id,
-    obs_value_text,
-    obs_value_numeric,
-    obs_value_coded,
-    obs_value_datetime,
-    obs_value_complex,
-    obs_value_drug,
-    obs_question_uuid,
-    obs_answer_uuid,
-    obs_value_coded_uuid,
-    status,
-    voided
-)
-SELECT o.encounter_id,
-       o.person_id,
-       o.obs_datetime,
-       e.encounter_datetime,
-       e.encounter_type_uuid,
-       o.concept_id     AS obs_question_concept_id,
-       o.value_text     AS obs_value_text,
-       o.value_numeric  AS obs_value_numeric,
-       o.value_coded    AS obs_value_coded,
-       o.value_datetime AS obs_value_datetime,
-       o.value_complex  AS obs_value_complex,
-       o.value_drug     AS obs_value_drug,
-       NULL             AS obs_question_uuid,
-       NULL             AS obs_answer_uuid,
-       NULL             AS obs_value_coded_uuid,
-       o.status,
-       o.voided
-FROM obs o
-         INNER JOIN mamba_dim_encounter e
-                    ON o.encounter_id = e.encounter_id
-WHERE o.encounter_id IS NOT NULL and o.voided =0;
+    SELECT JSON_ARRAY_LENGTH(@report_encounter_uuid) INTO @report_encounter_uuid_len;
+
+    SET @my_count = 1;
+    WHILE @my_count <= 7
+        DO
+            SELECT  GET_ARRAY_ITEM_BY_INDEX(@report_encounter_uuid, @my_count) INTO @encounter_type_uuid;
+            IF @encounter_type_uuid ='8d5b2be0-c2cc-11de-8d13-0010c6dffd0f' THEN
+                INSERT INTO mamba_z_encounter_obs
+                    (
+                            encounter_id,
+                            person_id,
+                            obs_datetime,
+                            encounter_datetime,
+                            encounter_type_uuid,
+                            obs_question_concept_id,
+                            obs_value_text,
+                            obs_value_numeric,
+                            obs_value_coded,
+                            obs_value_datetime,
+                            obs_value_complex,
+                            obs_value_drug,
+                            obs_question_uuid,
+                            obs_answer_uuid,
+                            obs_value_coded_uuid,
+                            status,
+                            voided
+                    )
+                    SELECT o.encounter_id,
+                               o.person_id,
+                               o.obs_datetime,
+                               e.encounter_datetime,
+                               e.encounter_type_uuid,
+                               o.concept_id     AS obs_question_concept_id,
+                               o.value_text     AS obs_value_text,
+                               o.value_numeric  AS obs_value_numeric,
+                               o.value_coded    AS obs_value_coded,
+                               o.value_datetime AS obs_value_datetime,
+                               o.value_complex  AS obs_value_complex,
+                               o.value_drug     AS obs_value_drug,
+                               NULL             AS obs_question_uuid,
+                               NULL             AS obs_answer_uuid,
+                               NULL             AS obs_value_coded_uuid,
+                               o.status,
+                               o.voided
+                        FROM obs o
+                                 INNER JOIN mamba_dim_encounter e
+                                            ON o.encounter_id = e.encounter_id
+                        WHERE o.encounter_id IS NOT NULL and o.voided =0 and e.encounter_datetime >=DATE_SUB(CURRENT_DATE(), INTERVAL 8 YEAR) and e.encounter_type_uuid= @encounter_type_uuid;
+            ELSE
+                INSERT INTO mamba_z_encounter_obs
+                        (
+                            encounter_id,
+                            person_id,
+                            obs_datetime,
+                            encounter_datetime,
+                            encounter_type_uuid,
+                            obs_question_concept_id,
+                            obs_value_text,
+                            obs_value_numeric,
+                            obs_value_coded,
+                            obs_value_datetime,
+                            obs_value_complex,
+                            obs_value_drug,
+                            obs_question_uuid,
+                            obs_answer_uuid,
+                            obs_value_coded_uuid,
+                            status,
+                            voided
+                        )
+                SELECT o.encounter_id,
+                           o.person_id,
+                           o.obs_datetime,
+                           e.encounter_datetime,
+                           e.encounter_type_uuid,
+                           o.concept_id     AS obs_question_concept_id,
+                           o.value_text     AS obs_value_text,
+                           o.value_numeric  AS obs_value_numeric,
+                           o.value_coded    AS obs_value_coded,
+                           o.value_datetime AS obs_value_datetime,
+                           o.value_complex  AS obs_value_complex,
+                           o.value_drug     AS obs_value_drug,
+                           NULL             AS obs_question_uuid,
+                           NULL             AS obs_answer_uuid,
+                           NULL             AS obs_value_coded_uuid,
+                           o.status,
+                           o.voided
+                FROM obs o
+                             INNER JOIN mamba_dim_encounter e
+                                        ON o.encounter_id = e.encounter_id
+                WHERE o.encounter_id IS NOT NULL and o.voided =0 and e.encounter_type_uuid= @encounter_type_uuid;
+            END IF;
+        SET @my_count = @my_count + 1;
+        END WHILE;
 
 -- $END
 END~
@@ -3731,6 +3851,7 @@ CALL sp_data_processing_derived_transfers();
 CALL sp_data_processing_derived_non_suppressed();
 CALL sp_data_processing_derived_hiv_art_card();
 CALL sp_data_processing_derived_IIT();
+CALL sp_data_processing_derived_hts();
     -- $END
 END~
 
@@ -10113,6 +10234,222 @@ BEGIN
 END WHILE;
 END~
 
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_hts_card  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_hts_card;
+
+~
+CREATE PROCEDURE sp_fact_encounter_hts_card()
+BEGIN
+-- $BEGIN
+CALL sp_fact_encounter_hts_card_create();
+CALL sp_fact_encounter_hts_card_insert();
+CALL sp_fact_encounter_hts_card_update();
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_hts_card_create  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_hts_card_create;
+
+~
+CREATE PROCEDURE sp_fact_encounter_hts_card_create()
+BEGIN
+-- $BEGIN
+CREATE TABLE mamba_fact_encounter_hts_card
+(
+    id                                    INT AUTO_INCREMENT,
+    encounter_id                          INT NULL,
+    client_id                             INT          NULL,
+    encounter_date                        DATE         NULL,
+    family_member_accompanying_patient    VARCHAR(255) NULL,
+    other_specified_family_member         VARCHAR(255) NULL,
+    delivery_model                        VARCHAR(255) NULL,
+    counselling_approach                  VARCHAR(255) NULL,
+    hct_entry_point                       VARCHAR(255) NULL,
+    community_testing_point               VARCHAR(255) NULL,
+    other_community_testing               VARCHAR(255) NULL,
+    anc_visit_number                      VARCHAR(255) NULL,
+    other_care_entry_point                VARCHAR(255) NULL,
+    reason_for_testing                    VARCHAR(255) NULL,
+    reason_for_testing_other_specify      TEXT NULL,
+    special_category                      VARCHAR(255) NULL,
+    other_special_category                TEXT NULL,
+    hiv_first_time_tester                 VARCHAR(255) NULL,
+    previous_hiv_tests_date               DATE NULL,
+    months_since_first_hiv_aids_symptoms  VARCHAR(255),
+    previous_hiv_test_results             VARCHAR(255),
+    referring_health_facility             VARCHAR(255),
+    no_of_times_tested_in_last_12_months  INT NULL,
+    no_of_partners_in_the_last_12_months  INT NULL,
+    partner_tested_for_hiv                VARCHAR(255) NULL,
+    partner_hiv_test_result               VARCHAR(255) NULL,
+    pre_test_counseling_done              VARCHAR(255) NULL,
+    counselling_session_type              VARCHAR(255) NULL,
+    current_hiv_test_result               VARCHAR(255) NULL,
+    hiv_syphilis_duo                      VARCHAR(255) NULL,
+    consented_for_blood_drawn_for_testing VARCHAR(255) NULL,
+    hiv_recency_result                    VARCHAR(255) NULL,
+    hiv_recency_viral_load_results        VARCHAR(255) NULL,
+    hiv_recency_viral_load_qualitative DOUBLE NULL,
+    hiv_recency_sample_id                 VARCHAR(255) NULL,
+    hts_fingerprint_captured              VARCHAR(255) NULL,
+    results_received_as_individual        VARCHAR(255) NULL,
+    results_received_as_a_couple          VARCHAR(255) NULL,
+    couple_results                        VARCHAR(255) NULL,
+    tb_suspect                            VARCHAR(255) NULL,
+    presumptive_tb_case_referred          VARCHAR(255) NULL,
+    prevention_services_received          VARCHAR(255) NULL,
+    other_prevention_services             VARCHAR(255) NULL,
+    has_client_been_linked_to_care        VARCHAR(255) NULL,
+    name_of_location_transferred_to       VARCHAR(255) NULL,
+    PRIMARY KEY (id)
+) CHARSET = UTF8;
+
+CREATE INDEX
+    mamba_fact_encounter_hts_card_client_id_index ON mamba_fact_encounter_hts_card (client_id);
+
+CREATE INDEX
+    mamba_fact_encounter_hts_encounter_id_index ON mamba_fact_encounter_hts_card (encounter_id);
+
+CREATE INDEX
+    mamba_fact_encounter_hts_card_encounter_date_index ON mamba_fact_encounter_hts_card (encounter_date);
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_hts_card_insert  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_hts_card_insert;
+
+~
+CREATE PROCEDURE sp_fact_encounter_hts_card_insert()
+BEGIN
+-- $BEGIN
+INSERT INTO mamba_fact_encounter_hts_card (encounter_id,
+                                           client_id,
+                                           family_member_accompanying_patient, other_specified_family_member,
+                                           delivery_model, counselling_approach, hct_entry_point,
+                                           community_testing_point, other_community_testing, anc_visit_number,
+                                           other_care_entry_point, reason_for_testing, reason_for_testing_other_specify,
+                                           special_category, other_special_category, hiv_first_time_tester,
+                                           previous_hiv_tests_date, months_since_first_hiv_aids_symptoms,
+                                           previous_hiv_test_results, referring_health_facility,
+                                           no_of_times_tested_in_last_12_months, no_of_partners_in_the_last_12_months,
+                                           partner_tested_for_hiv, partner_hiv_test_result,
+                                           pre_test_counseling_done, counselling_session_type,
+                                           current_hiv_test_result, hiv_syphilis_duo,
+                                           consented_for_blood_drawn_for_testing, hiv_recency_result,
+                                           hiv_recency_viral_load_results, hiv_recency_viral_load_qualitative,
+                                           hiv_recency_sample_id, hts_fingerprint_captured,
+                                           results_received_as_individual, results_received_as_a_couple,
+                                           couple_results, tb_suspect, presumptive_tb_case_referred,
+                                           prevention_services_received, other_prevention_services,
+                                           has_client_been_linked_to_care, name_of_location_transferred_to)
+SELECT encounter_id,
+       client_id,
+       family_member_accompanying_patient,
+       other_specified_family_member,
+       delivery_model,
+       counselling_approach,
+       hct_entry_point,
+       community_testing_point,
+       other_community_testing,
+       anc_visit_number,
+       other_care_entry_point,
+       reason_for_testing,
+       reason_for_testing_other_specify,
+       special_category,
+       other_special_category,
+       hiv_first_time_tester,
+       previous_hiv_tests_date,
+       months_since_first_hiv_aids_symptoms,
+       previous_hiv_test_results,
+       referring_health_facility,
+       no_of_times_tested_in_last_12_months,
+       no_of_partners_in_the_last_12_months,
+       partner_tested_for_hiv,
+       partner_hiv_test_result,
+       pre_test_counseling_done,
+       counselling_session_type,
+       current_hiv_test_result,
+       hiv_syphilis_duo,
+       consented_for_blood_drawn_for_testing,
+       hiv_recency_result,
+       hiv_recency_viral_load_results,
+       hiv_recency_viral_load_qualitative,
+       hiv_recency_sample_id,
+       hts_fingerprint_captured,
+       results_received_as_individual,
+       results_received_as_a_couple,
+       couple_results,tb_suspect,
+       presumptive_tb_case_referred,
+       prevention_services_received,
+       other_prevention_services,
+       has_client_been_linked_to_care,
+       name_of_location_transferred_to
+
+FROM mamba_flat_encounter_hts_card
+where encounter_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 5 YEAR);
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_hts_card_query  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_hts_card_update  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_hts_card_update;
+
+~
+CREATE PROCEDURE sp_fact_encounter_hts_card_update()
+BEGIN
+-- $BEGIN
+-- $END
+END~
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_data_processing_derived_hts  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_hts;
+
+~
+CREATE PROCEDURE sp_data_processing_derived_hts()
+BEGIN
+-- $BEGIN
+CALL sp_fact_encounter_hts_card;
+
+-- $END
+END~
 
 
         
