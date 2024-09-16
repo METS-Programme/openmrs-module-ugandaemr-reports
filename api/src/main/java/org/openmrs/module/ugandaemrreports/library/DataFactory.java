@@ -346,6 +346,14 @@ public class DataFactory {
 
     }
 
+    public PatientDataDefinition getLatestARTVisitDate(Location location) {
+        EncountersForPatientDataDefinition def = PatientColumns.createEncountersForPatientDataDefinition(Arrays.asList(Dictionary.getEncounterType("8d5b2be0-c2cc-11de-8d13-0010c6dffd0f")), "onOrBefore");
+        def.setWhich(TimeQualifier.LAST);
+        def.setLocationList(Arrays.asList(location));
+        def.addParameter(new Parameter("onOrBefore", "On or Before", Date.class));
+        return createPatientDataDefinition(def, getEncounterDatetimeConverter(), "onOrBefore=endDate");
+    }
+
     public PatientDataDefinition getObsDuringPeriod(Concept question, List<EncounterType> encounterTypes, TimeQualifier timeQualifier, String olderThan, DataConverter converter) {
         ObsForPersonDataDefinition def = PatientColumns.createObsForPersonData(question, encounterTypes, Arrays.asList("onOrBefore", "onOrAfter"), timeQualifier);
         String startDate = Parameters.createParameterBeforeDuration("onOrAfter", "startDate", olderThan);

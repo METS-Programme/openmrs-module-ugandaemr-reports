@@ -665,6 +665,14 @@
         "url": "reportingui/runReport.page?reportDefinition=22a58e5e-2535-44f3-a710-3856154ca29f",
         "order":15,
         "requiredPrivilege": "App: ugandaemrreports.recencyHTSClientCardDataExport"
+      },{
+        "id": "Patients on CRPDDP Program",
+        "extensionPointId": "org.openmrs.module.ugandaemr.integrationdataexports",
+        "type": "link",
+        "label": "Patients on CRPDDP Program",
+        "url": "reportingui/runReport.page?reportDefinition=1cd3041d-5779-42c3-81b9-9617cba26be0",
+        "order":15,
+        "requiredPrivilege": "App: ugandaemrreports.recencyHTSClientCardDataExport"
       },
       {
         "id": "HMIS 105 Section 2",
