@@ -12,6 +12,7 @@ BEGIN
     CALL sp_data_processing_derived_hiv_art_card();
     CALL sp_data_processing_derived_IIT();
     CALL sp_data_processing_derived_hts();
+    CALL sp_data_processing_derived_anc();
 
 END //
 
