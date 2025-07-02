@@ -247,6 +247,12 @@ facts/test_orders/sp_fact_test_orders_insert.sql
 facts/test_orders/sp_fact_test_orders_query.sql
 facts/test_orders/sp_fact_test_orders_update.sql
 
+facts/test_orders_results/sp_fact_test_orders_results.sql
+facts/test_orders_results/sp_fact_test_orders_results_create.sql
+facts/test_orders_results/sp_fact_test_orders_results_insert.sql
+facts/test_orders_results/sp_fact_test_orders_results_query.sql
+facts/test_orders_results/sp_fact_test_orders_results_update.sql
+
 #############################################################################
 ###### A single stored procedure that invokes (CALLs) the above SPs #########
 #############################################################################
