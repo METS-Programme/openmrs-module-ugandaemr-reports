@@ -122,7 +122,7 @@ SELECT cohort.client_id,
        mfplitps.no                                                          AS known_status_partners,
        cohort.age_group                                                     AS age_group,
        sub_cervical_cancer_screening.encounter_date                         AS cacx_date,
-       mfto_cd4.last_visit_date,
+       cd4_test_date,
        mfto_cd4.test_value as cd4
 
 FROM mamba_fact_art_patients cohort
@@ -331,15 +331,15 @@ FROM mamba_fact_art_patients cohort
                           GROUP BY client_id) a
                          ON a.client_id = b.client_id AND encounter_date = latest_encounter_date) sub_hiv_vl_date
                    ON sub_hiv_vl_date.client_id = cohort.client_id
-         LEFT JOIN (SELECT a.client_id, last_visit_date, b.test_value
-                    FROM mamba_fact_test_orders_rsults b
+         LEFT JOIN (SELECT a.client_id, cd4_test_date, b.test_value
+                    FROM mamba_fact_test_orders_results b
                              join
-                         (SELECT client_id, MAX(encounter_datetime) as last_visit_date
-                          from mamba_fact_test_orders_rsults
+                         (SELECT client_id, MAX(encounter_datetime) as cd4_test_date
+                          from mamba_fact_test_orders_results
                           WHERE test_parameter = 'cd4'
                             and test_value is not null
                           GROUP BY client_id) a
-                         ON a.client_id = b.client_id AND encounter_datetime = last_visit_date
+                         ON a.client_id = b.client_id AND encounter_datetime = cd4_test_date
                     WHERE test_parameter = 'cd4'
                       and test_value is not null) mfto_cd4
                    ON mfto_cd4.client_id = cohort.client_id

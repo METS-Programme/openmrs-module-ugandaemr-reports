@@ -1,7 +1,7 @@
 -- $BEGIN
-INSERT INTO mamba_fact_test_orders_rsults(test_orders_id,
+INSERT INTO mamba_fact_test_orders_results(test_orders_id,
                                           encounter_id,
-                                          enocunter_date,
+                                          encounter_datetime,
                                           client_id,
                                           test_concept_id,
                                           test_parameter,
@@ -38,7 +38,7 @@ FROM (SELECT mfto.id,
 WHERE IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED');
 
 
-INSERT INTO mamba_fact_test_orders_rsults(test_orders_id,
+INSERT INTO mamba_fact_test_orders_results(test_orders_id,
                                           encounter_id,
                                           client_id,
                                           test_concept_id,
