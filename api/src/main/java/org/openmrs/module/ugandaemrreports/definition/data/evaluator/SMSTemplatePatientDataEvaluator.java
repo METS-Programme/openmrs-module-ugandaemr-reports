@@ -20,6 +20,9 @@ import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.ugandaemrreports.definition.data.definition.SMSTemplatePatientDataDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +60,7 @@ public class SMSTemplatePatientDataEvaluator implements PatientDataEvaluator {
 
 
 
-        String query = String.format("SELECT o.person_id,pn.given_name, o.value_datetime from obs o inner join encounter e on o.encounter_id = e.encounter_id\n" +
+        String query = String.format("SELECT o.person_id,pn.given_name, DATE(o.value_datetime) from obs o inner join encounter e on o.encounter_id = e.encounter_id\n" +
                 "    inner  join encounter_type et on e.encounter_type = et.encounter_type_id inner join person_name pn on o.person_id=pn.person_id\n" +
                 "where o.concept_id=5096 and et.uuid='8d5b2be0-c2cc-11de-8d13-0010c6dffd0f' and o.value_datetime >='%s' and o.value_datetime<='%s' order by o.obs_datetime DESC", startDate, endDate);
 

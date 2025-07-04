@@ -122,7 +122,7 @@ public class SetupSMSAppointmentsReports extends UgandaEMRDataExportManager {
 
     @Override
     public String getVersion() {
-        return "1.0.6";
+        return "1.0.14";
     }
 
 

@@ -740,36 +740,12 @@
         "order": 5
       },
       {
-        "id": "HMIS 106A Section 1A HC01 To HC15 ",
+        "id": "HMIS 106A Section 1A 2024",
         "extensionPointId": "org.openmrs.module.ugandaemr.reports.quarterly",
         "type": "link",
-        "label": "HMIS 106A Section 1A HC01 To HC15",
-        "url": "reportingui/runReport.page?reportDefinition=072b526a-4140-4c43-9f5c-6d1fa74d7c42",
-        "order": 1
-      },
-      {
-        "id": "HMIS 106A Section 1A HC16 To HC28 ",
-        "extensionPointId": "org.openmrs.module.ugandaemr.reports.quarterly",
-        "type": "link",
-        "label": "HMIS 106A Section 1A HC16 To HC28",
-        "url": "reportingui/runReport.page?reportDefinition=0e3bdfde-3ee0-4f94-b105-bff844feba30",
-        "order": 2
-      },
-      {
-        "id": "HMIS 106A Section 1A HC29 To HC48 ",
-        "extensionPointId": "org.openmrs.module.ugandaemr.reports.quarterly",
-        "type": "link",
-        "label": "HMIS 106A Section 1A HC29 To HC48",
-        "url": "reportingui/runReport.page?reportDefinition=a2d6170e-1930-4f21-920c-6106e39058e8",
-        "order": 3
-      },
-      {
-        "id": "HMIS 106A Section 1A HC49 To HC52",
-        "extensionPointId": "org.openmrs.module.ugandaemr.reports.quarterly",
-        "type": "link",
-        "label": "HMIS 106A Section 1A HC49 To HC52",
-        "url": "reportingui/runReport.page?reportDefinition=ac1b2145-54aa-4ed8-9590-db7c47fe51e4",
-        "order": 4
+        "label": "HMIS 106A Section 1A 2024",
+        "url": "reportingui/runReport.page?reportDefinition=8c12b314-564e-4df6-9d06-410176de9461",
+        "order": 6
       },
       {
         "id": "HMIS 106A Sections 3.1",
