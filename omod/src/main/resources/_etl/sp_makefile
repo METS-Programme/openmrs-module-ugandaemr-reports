@@ -12,6 +12,7 @@ derived/art_card/sp_data_processing_derived_hiv_art_card.sql
 derived/non_suppressed/sp_data_processing_derived_non_suppressed.sql
 derived/IIT/sp_data_processing_derived_IIT.sql
 derived/hts/sp_data_processing_derived_hts.sql
+derived/anc/sp_data_processing_derived_anc.sql
 
 
 derived/z_obs/sp_mamba_z_encounter_obs_insert.sql

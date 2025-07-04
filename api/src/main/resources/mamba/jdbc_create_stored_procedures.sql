@@ -1053,8 +1053,6 @@ BEGIN
     DECLARE time_taken BIGINT;
     DECLARE etl_is_ready_to_run BOOLEAN DEFAULT FALSE;
 
-    -- cleanup stuck schedule
-    CALL sp_mamba_etl_un_stuck_scheduler();
     -- check if _mamba_etl_schedule is empty(new) or last transaction_status
     -- is 'COMPLETED' AND it was a 'SUCCESS' AND its 'end_time' was set.
     SET etl_is_ready_to_run = (SELECT COALESCE(
@@ -1143,48 +1141,6 @@ BEGIN
                            LIMIT 20
                        ) AS recent_records
     );
-
-END;
-~-~-
-
-
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_mamba_etl_un_stuck_scheduler  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_mamba_etl_un_stuck_scheduler;
-
-
-~-~-
-CREATE PROCEDURE sp_mamba_etl_un_stuck_scheduler()
-BEGIN
-
-    DECLARE running_schedule_record BOOLEAN DEFAULT FALSE;
-    DECLARE no_running_mamba_sp BOOLEAN DEFAULT FALSE;
-    DECLARE last_schedule_record_id INT;
-
-    SET running_schedule_record = (SELECT COALESCE(
-                                                  (SELECT IF(transaction_status = 'RUNNING'
-                                                                 AND completion_status is null,
-                                                             TRUE, FALSE)
-                                                   FROM _mamba_etl_schedule
-                                                   ORDER BY id DESC
-                                                   LIMIT 1), TRUE));
-    SET no_running_mamba_sp = NOT EXISTS (SELECT 1
-                                          FROM performance_schema.events_statements_current
-                                          WHERE SQL_TEXT LIKE 'CALL sp_mamba_etl_scheduler_wrapper(%'
-                                             OR SQL_TEXT = 'CALL sp_mamba_etl_scheduler_wrapper()');
-    IF running_schedule_record AND no_running_mamba_sp THEN
-        SET last_schedule_record_id = (SELECT MAX(id) FROM _mamba_etl_schedule limit 1);
-        UPDATE _mamba_etl_schedule
-        SET end_time                   = NOW(),
-            completion_status          = 'SUCCESS',
-            transaction_status         = 'COMPLETED',
-            success_or_error_message   = 'Stuck schedule updated'
-            WHERE id = last_schedule_record_id;
-    END IF;
 
 END;
 ~-~-
@@ -1776,8 +1732,8 @@ END;
 -- ----------------------  sp_mamba_flat_encounter_obs_group_table_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS `sp_mamba_flat_encounter_obs_group_table_create`;
 
+DROP PROCEDURE IF EXISTS `sp_mamba_flat_encounter_obs_group_table_create`;
 
 ~-~-
 CREATE PROCEDURE `sp_mamba_flat_encounter_obs_group_table_create`(
@@ -1800,7 +1756,7 @@ FROM `mamba_concept_metadata` cm
       FROM `mamba_z_encounter_obs` eo
                INNER JOIN `mamba_obs_group` og
                           ON eo.`obs_id` = og.`obs_id`
-      WHERE eo.`obs_group_id` IS NOT NULL
+      WHERE `obs_group_id` IS NOT NULL
         AND og.`obs_group_concept_name` = `obs_group_concept_name`) eo
      ON cm.`concept_id` = eo.`obs_question_concept_id`
 WHERE `flat_table_name` = `flat_encounter_table_name`
@@ -1813,8 +1769,7 @@ IF @column_labels IS NOT NULL THEN
                 '`visit_id` INT NULL,',
                 '`client_id` INT NOT NULL,',
                 '`encounter_datetime` DATETIME NOT NULL,',
-                '`location_id` INT NULL, '
-                '`obs_group_id` INT NOT NULL,', @column_labels,
+                '`location_id` INT NULL, ', @column_labels,
 
                 ',INDEX `mamba_idx_encounter_id` (`encounter_id`),',
                 'INDEX `mamba_idx_visit_id` (`visit_id`),',
@@ -1846,8 +1801,8 @@ END;
 -- ---------------------------------------------------------------------------------------------
 
 -- Flatten all Encounters given in Config folder
-DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_create_all;
 
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_create_all;
 
 ~-~-
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_create_all()
@@ -1910,8 +1865,9 @@ END;
 -- ----------------------  sp_mamba_flat_encounter_obs_group_table_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert;
 
+
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert;
 
 ~-~-
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert(
@@ -1994,7 +1950,7 @@ IF @column_labels IS NOT NULL THEN
 
     SET @insert_stmt = CONCAT(
             'INSERT INTO `', @tbl_obs_group_name, '` ',
-            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, eo.`obs_group_id`, ',
+            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, ',
             @column_labels, ' ',
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_question_uuid` ',
@@ -2017,7 +1973,7 @@ SET @update_stmt = (
 
         SET @insert_stmt = CONCAT(
             'INSERT INTO `', @tbl_obs_group_name, '` ',
-            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`,eo.`obs_group_id` , ',
+            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, ',
             @column_labels, ' ',
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_value_coded_uuid` ',
@@ -2044,8 +2000,8 @@ END;
 -- ---------------------------------------------------------------------------------------------
 
 -- Flatten all Encounters given in Config folder
-DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert_all;
 
+DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert_all;
 
 ~-~-
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert_all()
@@ -3685,6 +3641,67 @@ END;
 
 
 SET @report_data = '{"flat_report_metadata":[{
+  "report_name": "Integrated_Antenatal_Register",
+  "encounter_type_uuid": "044daI6d-f80e-48fe-aba9-037f241905Pe",
+  "flat_table_name": "mamba_flat_encounter_anc_register",
+  "concepts_locale": "en",
+  "table_columns": {
+    "serial_number": "1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "client_number": "c7231d96-34d8-4bf7-a509-c810f75e3329",
+    "anc_visit_number": "c0b1b5f1-a692-49d1-9a69-ff901e07fa27",
+    "gravida": "dcc39097-30ab-102d-86b0-7a5022ba4115",
+    "parity": "1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "gestation_age": "dca0a383-30ab-102d-86b0-7a5022ba4115",
+    "anc_1_timimg": "3a862ab6-7601-4412-b626-d373c1d4a51e",
+    "womans_initial_result": "d5b0394c-424f-41db-bc2f-37180dcdbe74",
+    "stk_given": "609c9aee-92b3-4e17-828a-efc7933f2ecf",
+    "partners_age": "4049d989-b99e-440d-8f70-c222aa9fe45c",
+    "partners_stk_result": "e47d9ead-5b33-4315-9ea0-42669e4491b6",
+    "partners_facility_result": "6a24b53e-9916-4073-b1f3-b8b2f8a16bc2",
+    "partners_test_for_verification_results": "d5b0394c-424f-41db-bc2f-37180dcdbe74",
+    "partner_linked_to_art": "3d620422-0641-412e-ab31-5e45b98bc459",
+    "partner_clinic_no": "b12f285a-0a26-44b5-83b3-e229bda74679",
+    "where_": "dce015bb-30ab-102d-86b0-7a5022ba4115",
+    "prep_eligibility": "3b042553-b721-43c3-afd9-56914d87a0c2",
+    "prep_no.": "f762afb5-21cc-4fe1-b905-067ad78c563d",
+    "findings_after_clinical_assessment": "0de0b715-f3ef-4a91-a145-09509112b693",
+    "cd4": "dcbcba2c-30ab-102d-86b0-7a5022ba4115",
+    "date_cd4_sample_collected": "1ae6f663-d3b0-4527-bb8f-4ed18a9ca96c",
+    "who_clinical_stage": "dcdff274-30ab-102d-86b0-7a5022ba4115",
+    "emtct_risk_assesment": "a6037516-7c28-48ac-83c4-98ab4a032fa3",
+    "art_codes": "a615f932-26ee-449c-8e20-e50a15232763",
+    "linkage_art_no": "9db2900d-2b44-4629-bdf8-bf25de650577",
+    "infant_arv_prophylaxis": "f42e40f3-7f76-4c0d-b9cc-f66acbb092c4",
+    "viral_load": "dc8d83e3-30ab-102d-86b0-7a5022ba4115",
+    "hiv_viral_load_date": "0b434cfa-b11c-4d14-aaa2-9aed6ca2da88",
+    "infant_and_young_child_feeding": "5d993591-9334-43d9-a208-11b10adfad85",
+    "maternal_nutrition_counselling": "af7dccfd-4692-4e16-bd74-5ac4045bb6bf",
+    "family_planning_counseling": "0815c786-5994-49e4-aa07-28b662b0e428",
+    "gbv_risk_type": "6b433917-16af-498d-8fda-0e7919f59c5b",
+    "birth_preparedness": "82b07322-929a-46c4-bbe6-05e2c7522cfb",
+    "screened_for_tb": "81fa73db-eb74-4e1b-b259-be76658cbb10",
+    "client_has_presumptive_tb": "b80f04a4-1559-42fd-8923-f8a6d2456a04",
+    "unit_tb_no": "2e2ec250-f5d3-4de7-8c70-a458f42441e6",
+    "woa_scan_done": "fbea6522-78f5-4d3d-a695-aaedfef7a76a",
+    "womans_syphilis_hep_b_results": "275a6f72-b8a4-4038-977a-727552f69cb8",
+    "woman_hbsag": "159430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "woman_eligibility_for_arvs": "f53b4efe-f2b2-4ffc-ae76-9c2131456f21",
+    "partners_syphilis_hep_b_results": "d8bc9915-ed4b-4df9-9458-72ca1bc2cd06",
+    "partners_hbsag": "e919a46e-59d0-4443-9a63-ddda2346786d",
+    "partners_eligibility_for_arvs": "2f2c65d4-4498-46a8-8c32-e32c4da62c51",
+    "other_treatment_given": "59560ede-43e2-4e56-a47e-0f876779f0e1",
+    "risk_factors": "120186AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "linked_to_group_anc": "9e68083f-1c4d-4919-9ec1-4a270ed5c975",
+    "referral_type": "67ea4375-0f4f-4e67-b8b0-403942753a4d",
+    "ref_in_no": "9bf35577-f802-437d-8ca3-84ab15191d6e",
+    "cref_in_no.": "0c522db6-4332-4aa1-8293-e97ce406829a",
+    "ref_out_no.": "6f4f345f-e6a7-40ec-b7be-7d3b99f202ef",
+    "complications_and_risk_factors": "c2ff3c0b-1d02-4f45-96a4-8b5087f232fc",
+    "return_date": "dcac04cf-30ab-102d-86b0-7a5022ba4115",
+    "reason_for_next_appointment": "160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "other_reason_for_next_appointment": "e17524f4-4445-417e-9098-ecdd134a6b81"
+  }
+},{
   "report_name": "ART_Card_Encounter",
   "flat_table_name": "mamba_flat_encounter_art_card",
   "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f",
@@ -4490,6 +4507,67 @@ END;
 
 
 SET @report_data = '{"flat_report_metadata":[{
+  "report_name": "Integrated_Antenatal_Register",
+  "encounter_type_uuid": "044daI6d-f80e-48fe-aba9-037f241905Pe",
+  "flat_table_name": "mamba_flat_encounter_anc_register",
+  "concepts_locale": "en",
+  "table_columns": {
+    "serial_number": "1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "client_number": "c7231d96-34d8-4bf7-a509-c810f75e3329",
+    "anc_visit_number": "c0b1b5f1-a692-49d1-9a69-ff901e07fa27",
+    "gravida": "dcc39097-30ab-102d-86b0-7a5022ba4115",
+    "parity": "1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "gestation_age": "dca0a383-30ab-102d-86b0-7a5022ba4115",
+    "anc_1_timimg": "3a862ab6-7601-4412-b626-d373c1d4a51e",
+    "womans_initial_result": "d5b0394c-424f-41db-bc2f-37180dcdbe74",
+    "stk_given": "609c9aee-92b3-4e17-828a-efc7933f2ecf",
+    "partners_age": "4049d989-b99e-440d-8f70-c222aa9fe45c",
+    "partners_stk_result": "e47d9ead-5b33-4315-9ea0-42669e4491b6",
+    "partners_facility_result": "6a24b53e-9916-4073-b1f3-b8b2f8a16bc2",
+    "partners_test_for_verification_results": "d5b0394c-424f-41db-bc2f-37180dcdbe74",
+    "partner_linked_to_art": "3d620422-0641-412e-ab31-5e45b98bc459",
+    "partner_clinic_no": "b12f285a-0a26-44b5-83b3-e229bda74679",
+    "where_": "dce015bb-30ab-102d-86b0-7a5022ba4115",
+    "prep_eligibility": "3b042553-b721-43c3-afd9-56914d87a0c2",
+    "prep_no.": "f762afb5-21cc-4fe1-b905-067ad78c563d",
+    "findings_after_clinical_assessment": "0de0b715-f3ef-4a91-a145-09509112b693",
+    "cd4": "dcbcba2c-30ab-102d-86b0-7a5022ba4115",
+    "date_cd4_sample_collected": "1ae6f663-d3b0-4527-bb8f-4ed18a9ca96c",
+    "who_clinical_stage": "dcdff274-30ab-102d-86b0-7a5022ba4115",
+    "emtct_risk_assesment": "a6037516-7c28-48ac-83c4-98ab4a032fa3",
+    "art_codes": "a615f932-26ee-449c-8e20-e50a15232763",
+    "linkage_art_no": "9db2900d-2b44-4629-bdf8-bf25de650577",
+    "infant_arv_prophylaxis": "f42e40f3-7f76-4c0d-b9cc-f66acbb092c4",
+    "viral_load": "dc8d83e3-30ab-102d-86b0-7a5022ba4115",
+    "hiv_viral_load_date": "0b434cfa-b11c-4d14-aaa2-9aed6ca2da88",
+    "infant_and_young_child_feeding": "5d993591-9334-43d9-a208-11b10adfad85",
+    "maternal_nutrition_counselling": "af7dccfd-4692-4e16-bd74-5ac4045bb6bf",
+    "family_planning_counseling": "0815c786-5994-49e4-aa07-28b662b0e428",
+    "gbv_risk_type": "6b433917-16af-498d-8fda-0e7919f59c5b",
+    "birth_preparedness": "82b07322-929a-46c4-bbe6-05e2c7522cfb",
+    "screened_for_tb": "81fa73db-eb74-4e1b-b259-be76658cbb10",
+    "client_has_presumptive_tb": "b80f04a4-1559-42fd-8923-f8a6d2456a04",
+    "unit_tb_no": "2e2ec250-f5d3-4de7-8c70-a458f42441e6",
+    "woa_scan_done": "fbea6522-78f5-4d3d-a695-aaedfef7a76a",
+    "womans_syphilis_hep_b_results": "275a6f72-b8a4-4038-977a-727552f69cb8",
+    "woman_hbsag": "159430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "woman_eligibility_for_arvs": "f53b4efe-f2b2-4ffc-ae76-9c2131456f21",
+    "partners_syphilis_hep_b_results": "d8bc9915-ed4b-4df9-9458-72ca1bc2cd06",
+    "partners_hbsag": "e919a46e-59d0-4443-9a63-ddda2346786d",
+    "partners_eligibility_for_arvs": "2f2c65d4-4498-46a8-8c32-e32c4da62c51",
+    "other_treatment_given": "59560ede-43e2-4e56-a47e-0f876779f0e1",
+    "risk_factors": "120186AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "linked_to_group_anc": "9e68083f-1c4d-4919-9ec1-4a270ed5c975",
+    "referral_type": "67ea4375-0f4f-4e67-b8b0-403942753a4d",
+    "ref_in_no": "9bf35577-f802-437d-8ca3-84ab15191d6e",
+    "cref_in_no.": "0c522db6-4332-4aa1-8293-e97ce406829a",
+    "ref_out_no.": "6f4f345f-e6a7-40ec-b7be-7d3b99f202ef",
+    "complications_and_risk_factors": "c2ff3c0b-1d02-4f45-96a4-8b5087f232fc",
+    "return_date": "dcac04cf-30ab-102d-86b0-7a5022ba4115",
+    "reason_for_next_appointment": "160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "other_reason_for_next_appointment": "e17524f4-4445-417e-9098-ecdd134a6b81"
+  }
+},{
   "report_name": "ART_Card_Encounter",
   "flat_table_name": "mamba_flat_encounter_art_card",
   "encounter_type_uuid": "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f",
@@ -5192,7 +5270,6 @@ CREATE TABLE mamba_obs_group
     obs_id                 INT          NOT NULL,
     obs_group_concept_id   INT          NOT NULL,
     obs_group_concept_name VARCHAR(255) NOT NULL, -- should be the concept name of the obs
-    obs_group_id           INT          NOT NULL,
 
     INDEX mamba_idx_obs_id (obs_id),
     INDEX mamba_idx_obs_group_concept_id (obs_group_concept_id),
@@ -5257,11 +5334,10 @@ DEALLOCATE PREPARE stmt_temp_insert;
 
 -- Insert into the final table from the temp table, including concept data
 SET @sql_obs_group_insert = CONCAT('
-            INSERT INTO mamba_obs_group (obs_group_concept_id, obs_group_concept_name, obs_id,obs_group_id)
+            INSERT INTO mamba_obs_group (obs_group_concept_id, obs_group_concept_name, obs_id)
             SELECT DISTINCT o.obs_question_concept_id,
                             LEFT(c.auto_table_column_name, 12) AS name,
-                            o.obs_id,
-                            o.obs_group_id
+                            o.obs_id
             FROM mamba_temp_obs_group_ids t
                      INNER JOIN mamba_z_encounter_obs o ON t.obs_group_id = o.obs_group_id
                      INNER JOIN mamba_dim_concept c ON o.obs_question_concept_id = c.concept_id
@@ -13157,7 +13233,7 @@ DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_update;
 CREATE PROCEDURE sp_mamba_z_encounter_obs_update()
 BEGIN
     DECLARE v_total_records INT;
-    DECLARE v_batch_size INT DEFAULT 1000000; -- batch size
+    DECLARE v_batch_size INT DEFAULT 100000; -- batch size
     DECLARE v_offset INT DEFAULT 0;
     DECLARE v_rows_affected INT;
     
@@ -13952,6 +14028,46 @@ END;
 
         
 -- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_data_processing_derived_anc  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_anc;
+
+
+~-~-
+CREATE PROCEDURE sp_data_processing_derived_anc()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_data_processing_derived_anc', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_data_processing_derived_anc', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CALL sp_fact_encounter_anc_card;
+
+-- $END
+END;
+~-~-
+
+
+        
+-- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_z_encounter_obs_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -14321,6 +14437,7 @@ BEGIN
     CALL sp_data_processing_derived_hiv_art_card();
     CALL sp_data_processing_derived_IIT();
     CALL sp_data_processing_derived_hts();
+    CALL sp_data_processing_derived_anc();
 
 END;
 ~-~-
@@ -14881,6 +14998,368 @@ CREATE TABLE mamba_dim_agegroup
     PRIMARY KEY (id)
 )
     CHARSET = UTF8MB4;
+-- $END
+END;
+~-~-
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_anc_card  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_anc_card;
+
+
+~-~-
+CREATE PROCEDURE sp_fact_encounter_anc_card()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_encounter_anc_card', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_encounter_anc_card', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CALL sp_fact_encounter_anc_card_create();
+CALL sp_fact_encounter_anc_card_insert();
+CALL sp_fact_encounter_anc_card_update();
+-- $END
+END;
+~-~-
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_anc_card_create  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_anc_card_create;
+
+
+~-~-
+CREATE PROCEDURE sp_fact_encounter_anc_card_create()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_encounter_anc_card_create', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_encounter_anc_card_create', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CREATE TABLE mamba_fact_encounter_anc_card
+(
+    id                                    INT AUTO_INCREMENT,
+    encounter_id                          INT NULL,
+    client_id                             INT          NULL,
+    encounter_date                        DATETIME         NULL,
+    cd4                            DOUBLE       NULL,
+    where_                        TEXT         NULL,
+    parity                         DOUBLE       NULL,
+    gravida                        DOUBLE       NULL,
+    art_codes                      VARCHAR(250) NULL,
+    stk_given                      VARCHAR(250) NULL,
+    ref_in_no                  TEXT         NULL,
+    viral_load                     DOUBLE       NULL,
+    return_date                    DATE         NULL,
+    unit_tb_no                  TEXT         NULL,
+    woman_hbsag                    VARCHAR(250) NULL,
+    anc_1_timimg                   VARCHAR(250) NULL,
+    partners_age                   DOUBLE       NULL,
+    risk_factors                   TEXT         NULL,
+    client_number                  DOUBLE       NULL,
+    gbv_risk_type                  VARCHAR(250) NULL,
+    gestation_age                  DOUBLE       NULL,
+    referral_type                  VARCHAR(250) NULL,
+    serial_number                  TEXT         NULL,
+    woa_scan_done                  DOUBLE       NULL,
+    linkage_art_no              TEXT         NULL,
+    screened_for_tb                VARCHAR(250) NULL,
+    anc_visit_number               VARCHAR(250) NULL,
+    partner_clinic_no           TEXT         NULL,
+    who_clinical_stage             VARCHAR(250) NULL,
+    hiv_viral_load_date            DATE         NULL,
+    partners_stk_result            VARCHAR(250) NULL,
+    emtct_risk_assesment           VARCHAR(250) NULL,
+    other_treatment_given          TEXT         NULL,
+    partner_linked_to_art          VARCHAR(250) NULL,
+    womans_initial_result          VARCHAR(250) NULL,
+    infant_arv_prophylaxis         VARCHAR(250) NULL,
+    client_has_presumptive_tb      VARCHAR(250) NULL,
+    date_cd4_sample_collected      DATE         NULL,
+    family_planning_counseling     VARCHAR(250) NULL,
+    reason_for_next_appointment    VARCHAR(250) NULL,
+    complications_and_risk_factors TEXT         NULL,
+    infant_and_young_child_feeding VARCHAR(250) NULL,
+    maternal_nutrition_counselling VARCHAR(250) NULL,
+    womans_syphilis_hep_b_results      VARCHAR(250) NULL,
+    other_reason_for_next_appointment      TEXT         NULL,
+    partners_syphilis_hep_b_results    VARCHAR(250) NULL,
+    findings_after_clinical_assessment     TEXT         NULL,
+    partners_test_for_verification_results VARCHAR(250) NULL,
+
+    PRIMARY KEY (id)
+) CHARSET = UTF8;
+
+CREATE INDEX
+    mamba_fact_encounter_anc_card_client_id_index ON mamba_fact_encounter_anc_card (client_id);
+
+CREATE INDEX
+    mamba_fact_encounter_anc_encounter_id_index ON mamba_fact_encounter_anc_card (encounter_id);
+
+CREATE INDEX
+    mamba_fact_encounter_anc_card_encounter_date_index ON mamba_fact_encounter_anc_card (encounter_date);
+-- $END
+END;
+~-~-
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_anc_card_insert  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_anc_card_insert;
+
+
+~-~-
+CREATE PROCEDURE sp_fact_encounter_anc_card_insert()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_encounter_anc_card_insert', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_encounter_anc_card_insert', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+INSERT INTO mamba_fact_encounter_anc_card (encounter_id,
+                                           client_id,
+                                           encounter_date,
+                                           cd4,
+                                           where_,
+                                           parity,
+                                           gravida,
+                                           art_codes,
+                                           stk_given,
+                                           ref_in_no,
+                                           viral_load,
+                                           return_date,
+                                           unit_tb_no,
+                                           woman_hbsag,
+                                           anc_1_timimg,
+                                           partners_age,
+                                           risk_factors,
+                                           client_number,
+                                           gbv_risk_type,
+                                           gestation_age,
+                                           referral_type,
+                                           serial_number,
+                                           woa_scan_done,
+                                           linkage_art_no,
+                                           screened_for_tb,
+                                           anc_visit_number,
+                                           partner_clinic_no,
+                                           who_clinical_stage,
+                                           hiv_viral_load_date,
+                                           partners_stk_result,
+                                           emtct_risk_assesment,
+                                           other_treatment_given,
+                                           partner_linked_to_art,
+                                           womans_initial_result,
+                                           infant_arv_prophylaxis,
+                                           client_has_presumptive_tb,
+                                           date_cd4_sample_collected,
+                                           family_planning_counseling,
+                                           reason_for_next_appointment,
+                                           complications_and_risk_factors,
+                                           infant_and_young_child_feeding,
+                                           maternal_nutrition_counselling,
+                                           womans_syphilis_hep_b_results,
+                                           other_reason_for_next_appointment,
+                                           partners_syphilis_hep_b_results,
+                                           findings_after_clinical_assessment,
+                                           partners_test_for_verification_results)
+SELECT a.encounter_id,
+       a.client_id,
+       a.encounter_datetime,
+       cd4,
+       where_,
+       parity,
+       gravida,
+       art_codes,
+       stk_given,
+       ref_in_no,
+       viral_load,
+       return_date,
+       unit_tb_no,
+       woman_hbsag,
+       anc_1_timimg,
+       partners_age,
+       risk_factors,
+       client_number,
+       gbv_risk_type,
+       gestation_age,
+       referral_type,
+       serial_number,
+       woa_scan_done,
+       linkage_art_no,
+       screened_for_tb,
+       anc_visit_number,
+       partner_clinic_no,
+       who_clinical_stage,
+       hiv_viral_load_date,
+       partners_stk_result,
+       emtct_risk_assesment,
+       other_treatment_given,
+       partner_linked_to_art,
+       womans_initial_result,
+       infant_arv_prophylaxis,
+       client_has_presumptive_tb,
+       date_cd4_sample_collected,
+       family_planning_counseling,
+       reason_for_next_appointment,
+       complications_and_risk_factors,
+       infant_and_young_child_feeding,
+       maternal_nutrition_counselling,
+       womans_syphilis_hep_b_results,
+       other_reason_for_next_appointment,
+       partners_syphilis_hep_b_results,
+       findings_after_clinical_assessment,
+       partners_test_for_verification_results
+
+FROM mamba_flat_encounter_anc_register a
+         left join mamba_flat_encounter_anc_register_1 b on a.encounter_id = b.encounter_id;
+-- $END
+END;
+~-~-
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_anc_card_query  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_encounter_anc_card_update  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_encounter_anc_card_update;
+
+
+~-~-
+CREATE PROCEDURE sp_fact_encounter_anc_card_update()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_encounter_anc_card_update', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_encounter_anc_card_update', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+-- $END
+END;
+~-~-
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_data_processing_derived_anc  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_anc;
+
+
+~-~-
+CREATE PROCEDURE sp_data_processing_derived_anc()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_data_processing_derived_anc', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_data_processing_derived_anc', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CALL sp_fact_encounter_anc_card;
+
 -- $END
 END;
 ~-~-
