@@ -6,6 +6,7 @@ CALL sp_fact_encounter_hiv_art_health_education;
 CALL sp_fact_active_in_care;
 CALL sp_fact_medication_orders;
 CALL sp_fact_test_orders;
+CALL sp_fact_test_orders_results;
 CALL sp_fact_latest_adherence_patients;
 CALL sp_fact_latest_advanced_disease_patients;
 CALL sp_fact_latest_arv_days_dispensed_patients;

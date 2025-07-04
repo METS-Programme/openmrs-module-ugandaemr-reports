@@ -47,7 +47,7 @@
         <serialization.xstreamVersion>0.2.10</serialization.xstreamVersion>
         <webservices.restModuleVersion>2.28.0</webservices.restModuleVersion>
         <reportingCompatibilityVersion>2.0.9</reportingCompatibilityVersion>
-        <mambaETLCoreVersion>1.0.1-SNAPSHOT</mambaETLCoreVersion>
+        <mambaETLCoreVersion>2.0.0</mambaETLCoreVersion>
         <javaxAnnotationVersion>1.3.2</javaxAnnotationVersion>
     </properties>
 
