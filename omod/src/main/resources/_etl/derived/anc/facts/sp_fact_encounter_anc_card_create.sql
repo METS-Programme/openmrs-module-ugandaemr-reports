@@ -49,6 +49,17 @@ CREATE TABLE mamba_fact_encounter_anc_card
     partners_syphilis_hep_b_results    VARCHAR(250) NULL,
     findings_after_clinical_assessment     TEXT         NULL,
     partners_test_for_verification_results VARCHAR(250) NULL,
+    timing VARCHAR(250) NULL,
+    ipt_dose VARCHAR(250) NULL,
+    mother_received_free_llin VARCHAR(250) NULL,
+    mother_received_mebandazole_dose VARCHAR(250) NULL,
+    tetanus VARCHAR(250) NULL,
+    hepatitis_b VARCHAR(250) NULL,
+    covid_19 VARCHAR(250) NULL,
+    no_of_iron_sulphates_pills INT NULL,
+    no_of_folic_acid_pills INT NULL,
+    no_of_iron_and_folic_acid_combined_pills INT NULL ,
+    no_of_micronutrient_supplements_pills INT NULL,
 
     PRIMARY KEY (id)
 ) CHARSET = UTF8;

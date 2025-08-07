@@ -3,6 +3,7 @@
 #############################################################################
 functions/fn_mamba_calculate_moh_age_group.sql
 functions/fn_mamba_calculate_moh_2024_age_group.sql
+functions/fn_mamba_calculate_moh_anc_age_group.sql
 functions/sp_mamba_insert_age_group.sql
 
 #############################################################################

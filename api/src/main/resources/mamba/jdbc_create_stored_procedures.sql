@@ -1053,6 +1053,8 @@ BEGIN
     DECLARE time_taken BIGINT;
     DECLARE etl_is_ready_to_run BOOLEAN DEFAULT FALSE;
 
+    -- cleanup stuck schedule
+    CALL sp_mamba_etl_un_stuck_scheduler();
     -- check if _mamba_etl_schedule is empty(new) or last transaction_status
     -- is 'COMPLETED' AND it was a 'SUCCESS' AND its 'end_time' was set.
     SET etl_is_ready_to_run = (SELECT COALESCE(
@@ -1141,6 +1143,48 @@ BEGIN
                            LIMIT 20
                        ) AS recent_records
     );
+
+END;
+~-~-
+
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_etl_un_stuck_scheduler  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_mamba_etl_un_stuck_scheduler;
+
+
+~-~-
+CREATE PROCEDURE sp_mamba_etl_un_stuck_scheduler()
+BEGIN
+
+    DECLARE running_schedule_record BOOLEAN DEFAULT FALSE;
+    DECLARE no_running_mamba_sp BOOLEAN DEFAULT FALSE;
+    DECLARE last_schedule_record_id INT;
+
+    SET running_schedule_record = (SELECT COALESCE(
+                                                  (SELECT IF(transaction_status = 'RUNNING'
+                                                                 AND completion_status is null,
+                                                             TRUE, FALSE)
+                                                   FROM _mamba_etl_schedule
+                                                   ORDER BY id DESC
+                                                   LIMIT 1), TRUE));
+    SET no_running_mamba_sp = NOT EXISTS (SELECT 1
+                                          FROM performance_schema.events_statements_current
+                                          WHERE SQL_TEXT LIKE 'CALL sp_mamba_etl_scheduler_wrapper(%'
+                                             OR SQL_TEXT = 'CALL sp_mamba_etl_scheduler_wrapper()');
+    IF running_schedule_record AND no_running_mamba_sp THEN
+        SET last_schedule_record_id = (SELECT MAX(id) FROM _mamba_etl_schedule limit 1);
+        UPDATE _mamba_etl_schedule
+        SET end_time                   = NOW(),
+            completion_status          = 'SUCCESS',
+            transaction_status         = 'COMPLETED',
+            success_or_error_message   = 'Stuck schedule updated'
+            WHERE id = last_schedule_record_id;
+    END IF;
 
 END;
 ~-~-
@@ -1732,8 +1776,8 @@ END;
 -- ----------------------  sp_mamba_flat_encounter_obs_group_table_create  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-
 DROP PROCEDURE IF EXISTS `sp_mamba_flat_encounter_obs_group_table_create`;
+
 
 ~-~-
 CREATE PROCEDURE `sp_mamba_flat_encounter_obs_group_table_create`(
@@ -1756,7 +1800,7 @@ FROM `mamba_concept_metadata` cm
       FROM `mamba_z_encounter_obs` eo
                INNER JOIN `mamba_obs_group` og
                           ON eo.`obs_id` = og.`obs_id`
-      WHERE `obs_group_id` IS NOT NULL
+      WHERE eo.`obs_group_id` IS NOT NULL
         AND og.`obs_group_concept_name` = `obs_group_concept_name`) eo
      ON cm.`concept_id` = eo.`obs_question_concept_id`
 WHERE `flat_table_name` = `flat_encounter_table_name`
@@ -1769,7 +1813,8 @@ IF @column_labels IS NOT NULL THEN
                 '`visit_id` INT NULL,',
                 '`client_id` INT NOT NULL,',
                 '`encounter_datetime` DATETIME NOT NULL,',
-                '`location_id` INT NULL, ', @column_labels,
+                '`location_id` INT NULL, '
+                '`obs_group_id` INT NOT NULL,', @column_labels,
 
                 ',INDEX `mamba_idx_encounter_id` (`encounter_id`),',
                 'INDEX `mamba_idx_visit_id` (`visit_id`),',
@@ -1801,8 +1846,8 @@ END;
 -- ---------------------------------------------------------------------------------------------
 
 -- Flatten all Encounters given in Config folder
-
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_create_all;
+
 
 ~-~-
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_create_all()
@@ -1865,9 +1910,8 @@ END;
 -- ----------------------  sp_mamba_flat_encounter_obs_group_table_insert  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
-
-
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert;
+
 
 ~-~-
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert(
@@ -1950,7 +1994,7 @@ IF @column_labels IS NOT NULL THEN
 
     SET @insert_stmt = CONCAT(
             'INSERT INTO `', @tbl_obs_group_name, '` ',
-            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, ',
+            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, eo.`obs_group_id`, ',
             @column_labels, ' ',
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_question_uuid` ',
@@ -1973,7 +2017,7 @@ SET @update_stmt = (
 
         SET @insert_stmt = CONCAT(
             'INSERT INTO `', @tbl_obs_group_name, '` ',
-            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`, ',
+            'SELECT eo.`encounter_id`, MAX(eo.`visit_id`) AS `visit_id`, eo.`person_id`, eo.`encounter_datetime`, MAX(eo.`location_id`) AS `location_id`,eo.`obs_group_id` , ',
             @column_labels, ' ',
             'FROM `mamba_z_encounter_obs` eo ',
             'INNER JOIN `mamba_temp_concept_metadata_group` tcm ON tcm.`concept_uuid` = eo.`obs_value_coded_uuid` ',
@@ -2000,8 +2044,8 @@ END;
 -- ---------------------------------------------------------------------------------------------
 
 -- Flatten all Encounters given in Config folder
-
 DROP PROCEDURE IF EXISTS sp_mamba_flat_encounter_obs_group_table_insert_all;
+
 
 ~-~-
 CREATE PROCEDURE sp_mamba_flat_encounter_obs_group_table_insert_all()
@@ -2292,21 +2336,27 @@ BEGIN
                 SELECT JSON_EXTRACT(@report_array, CONCAT('$[', @report_count, ']')) INTO @report;
                 SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, '$.report_name')) INTO @report_name;
                 SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, '$.report_id')) INTO @report_id;
+
                 SELECT CONCAT('sp_mamba_report_', @report_id, '_query') INTO @report_procedure_name;
                 SELECT CONCAT('sp_mamba_report_', @report_id, '_columns_query') INTO @report_columns_procedure_name;
+                SELECT CONCAT('sp_mamba_report_', @report_id, '_size_query') INTO @report_size_procedure_name;
                 SELECT CONCAT('mamba_report_', @report_id) INTO @table_name;
+
                 SELECT JSON_UNQUOTE(JSON_EXTRACT(@report, CONCAT('$.report_sql.sql_query'))) INTO @sql_query;
                 SELECT JSON_EXTRACT(@report, CONCAT('$.report_sql.query_params')) INTO @query_params_array;
+                SELECT JSON_EXTRACT(@report, CONCAT('$.report_sql.paginate')) INTO @paginate_flag;
 
                 INSERT INTO mamba_dim_report_definition(report_id,
                                                         report_procedure_name,
                                                         report_columns_procedure_name,
+                                                        report_size_procedure_name,
                                                         sql_query,
                                                         table_name,
                                                         report_name)
                 VALUES (@report_id,
                         @report_procedure_name,
                         @report_columns_procedure_name,
+                        @report_size_procedure_name,
                         @sql_query,
                         @table_name,
                         @report_name);
@@ -2335,50 +2385,31 @@ BEGIN
                         SET @param_count = @param_position;
                     END WHILE;
 
+                -- Handle pagination parameters if paginate flag is true
+                IF @paginate_flag = TRUE OR @paginate_flag = 'true' THEN
+                    -- Add page_number parameter
+                    SET @page_number_position = @total_params + 1;
+                    INSERT INTO mamba_dim_report_definition_parameters(report_id,
+                                                                      parameter_name,
+                                                                      parameter_type,
+                                                                      parameter_position)
+                    VALUES (@report_id,
+                            'page_number',
+                            'INT',
+                            @page_number_position);
+                            
+                    -- Add page_size parameter
+                    SET @page_size_position = @total_params + 2;
+                    INSERT INTO mamba_dim_report_definition_parameters(report_id,
+                                                                      parameter_name,
+                                                                      parameter_type,
+                                                                      parameter_position)
+                    VALUES (@report_id,
+                            'page_size',
+                            'INT',
+                            @page_size_position);
+                END IF;
 
---                SELECT GROUP_CONCAT(COLUMN_NAME SEPARATOR ', ')
---                INTO @column_names
---                FROM INFORMATION_SCHEMA.COLUMNS
---                -- WHERE TABLE_SCHEMA = 'alive' TODO: add back after verifying schema name
---                WHERE TABLE_NAME = @report_id;
---
---                SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', @report_id, '`');
---
---                SET @createtb = CONCAT('CREATE TEMP TABLE AS SELECT ', @report_id, ';', CHAR(10),
---                                       'CREATE PROCEDURE ', @report_procedure_name, '(', CHAR(10),
---                                       @parameters, CHAR(10),
---                                       ')', CHAR(10),
---                                       'BEGIN', CHAR(10),
---                                       @sql_query, CHAR(10),
---                                       'END;', CHAR(10));
---
---                PREPARE deletetb FROM @drop_table;
---                PREPARE createtb FROM @create_table;
---
---               EXECUTE deletetb;
---               EXECUTE createtb;
---
---                DEALLOCATE PREPARE deletetb;
---                DEALLOCATE PREPARE createtb;
-
-                --                SELECT GROUP_CONCAT(CONCAT('IN ', parameter_name, ' ', parameter_type) SEPARATOR ', ')
---                INTO @parameters
---                FROM mamba_dim_report_definition_parameters
---                WHERE report_id = @report_id
---                ORDER BY parameter_position;
---
---                SET @procedure_definition = CONCAT('DROP PROCEDURE IF EXISTS ', @report_procedure_name, ';', CHAR(10),
---                                                   'CREATE PROCEDURE ', @report_procedure_name, '(', CHAR(10),
---                                                   @parameters, CHAR(10),
---                                                   ')', CHAR(10),
---                                                   'BEGIN', CHAR(10),
---                                                   @sql_query, CHAR(10),
---                                                   'END;', CHAR(10));
---
---                PREPARE CREATE_PROC FROM @procedure_definition;
---                EXECUTE CREATE_PROC;
---                DEALLOCATE PREPARE CREATE_PROC;
---
                 SET @report_count = @report_count + 1;
             END WHILE;
 
@@ -2426,6 +2457,71 @@ BEGIN
                          FROM mamba_dim_report_definition rd
                          WHERE rd.report_id = report_identifier);
     END IF;
+
+    OPEN cursor_parameter_names;
+    read_loop:
+    LOOP
+        FETCH cursor_parameter_names INTO arg_name;
+
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        SET arg_value = IFNULL((JSON_EXTRACT(parameter_list, CONCAT('$[', ((SELECT p.parameter_position
+                                                                            FROM mamba_dim_report_definition_parameters p
+                                                                            WHERE p.parameter_name = arg_name
+                                                                              AND p.report_id = report_identifier) - 1),
+                                                                    '].value'))), 'NULL');
+        SET tester = CONCAT_WS(', ', tester, arg_value);
+        SET sql_args = IFNULL(CONCAT_WS(', ', sql_args, arg_value), NULL);
+
+    END LOOP;
+
+    CLOSE cursor_parameter_names;
+
+    SET @sql = CONCAT('CALL ', proc_name, '(', IFNULL(sql_args, ''), ')');
+
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+END;
+~-~-
+
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_generate_report_size_sp_wrapper  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_mamba_generate_report_size_sp_wrapper;
+
+
+~-~-
+CREATE PROCEDURE sp_mamba_generate_report_size_sp_wrapper(
+    IN report_identifier VARCHAR(255),
+    IN parameter_list JSON)
+BEGIN
+
+    DECLARE proc_name VARCHAR(255);
+    DECLARE sql_args VARCHAR(1000);
+    DECLARE arg_name VARCHAR(50);
+    DECLARE arg_value VARCHAR(255);
+    DECLARE tester VARCHAR(255);
+    DECLARE done INT DEFAULT FALSE;
+
+    DECLARE cursor_parameter_names CURSOR FOR
+        SELECT DISTINCT (p.parameter_name)
+        FROM mamba_dim_report_definition_parameters p
+        WHERE p.report_id = report_identifier
+        AND p.parameter_name NOT IN ('page_number', 'page_size');
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    SET proc_name = (SELECT DISTINCT (rd.report_size_procedure_name)
+                         FROM mamba_dim_report_definition rd
+                         WHERE rd.report_id = report_identifier);
 
     OPEN cursor_parameter_names;
     read_loop:
@@ -3654,6 +3750,7 @@ SET @report_data = '{"flat_report_metadata":[{
     "gestation_age": "dca0a383-30ab-102d-86b0-7a5022ba4115",
     "anc_1_timimg": "3a862ab6-7601-4412-b626-d373c1d4a51e",
     "womans_initial_result": "d5b0394c-424f-41db-bc2f-37180dcdbe74",
+    "timing": "e769076c-e5b7-4597-8e26-439cda656d41",
     "stk_given": "609c9aee-92b3-4e17-828a-efc7933f2ecf",
     "partners_age": "4049d989-b99e-440d-8f70-c222aa9fe45c",
     "partners_stk_result": "e47d9ead-5b33-4315-9ea0-42669e4491b6",
@@ -3689,6 +3786,16 @@ SET @report_data = '{"flat_report_metadata":[{
     "partners_syphilis_hep_b_results": "d8bc9915-ed4b-4df9-9458-72ca1bc2cd06",
     "partners_hbsag": "e919a46e-59d0-4443-9a63-ddda2346786d",
     "partners_eligibility_for_arvs": "2f2c65d4-4498-46a8-8c32-e32c4da62c51",
+    "ipt_dose": "1da3cb98-59d8-4bfd-b0bb-c9c1bcd058c6",
+    "mother_received_free_llin": "3e7bb52c-e6ae-4a0b-bce0-3b36286e8658",
+    "mother_received_mebandazole_dose": "9d6abbc4-707a-4ec7-a32a-4090b1c3af87",
+    "tetanus": "39217e3d-6a39-4679-bf56-f0954a7ffdb8",
+    "hepatitis_b": "1572ab31-28d3-4eec-8f3b-f4867972781f",
+    "covid_19": "50032cf9-d5e6-4b8d-8d7d-32906d6a1115",
+    "no_of_iron_sulphates_pills": "c02d9887-6a46-43cc-9495-5ec034dc05d6",
+    "no_of_folic_acid_pills": "961ff308-bc19-4ae4-ba11-fe29157d20f9",
+    "no_of_iron_and_folic_acid_combined_pills": "b1e565e0-833e-4c9e-aea4-43ebf781c1e4",
+    "no_of_micronutrient_supplements_pills": "4cbd2972-ec29-4f90-8cbc-591d018f67a8",
     "other_treatment_given": "59560ede-43e2-4e56-a47e-0f876779f0e1",
     "risk_factors": "120186AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     "linked_to_group_anc": "9e68083f-1c4d-4919-9ec1-4a270ed5c975",
@@ -4520,6 +4627,7 @@ SET @report_data = '{"flat_report_metadata":[{
     "gestation_age": "dca0a383-30ab-102d-86b0-7a5022ba4115",
     "anc_1_timimg": "3a862ab6-7601-4412-b626-d373c1d4a51e",
     "womans_initial_result": "d5b0394c-424f-41db-bc2f-37180dcdbe74",
+    "timing": "e769076c-e5b7-4597-8e26-439cda656d41",
     "stk_given": "609c9aee-92b3-4e17-828a-efc7933f2ecf",
     "partners_age": "4049d989-b99e-440d-8f70-c222aa9fe45c",
     "partners_stk_result": "e47d9ead-5b33-4315-9ea0-42669e4491b6",
@@ -4555,6 +4663,16 @@ SET @report_data = '{"flat_report_metadata":[{
     "partners_syphilis_hep_b_results": "d8bc9915-ed4b-4df9-9458-72ca1bc2cd06",
     "partners_hbsag": "e919a46e-59d0-4443-9a63-ddda2346786d",
     "partners_eligibility_for_arvs": "2f2c65d4-4498-46a8-8c32-e32c4da62c51",
+    "ipt_dose": "1da3cb98-59d8-4bfd-b0bb-c9c1bcd058c6",
+    "mother_received_free_llin": "3e7bb52c-e6ae-4a0b-bce0-3b36286e8658",
+    "mother_received_mebandazole_dose": "9d6abbc4-707a-4ec7-a32a-4090b1c3af87",
+    "tetanus": "39217e3d-6a39-4679-bf56-f0954a7ffdb8",
+    "hepatitis_b": "1572ab31-28d3-4eec-8f3b-f4867972781f",
+    "covid_19": "50032cf9-d5e6-4b8d-8d7d-32906d6a1115",
+    "no_of_iron_sulphates_pills": "c02d9887-6a46-43cc-9495-5ec034dc05d6",
+    "no_of_folic_acid_pills": "961ff308-bc19-4ae4-ba11-fe29157d20f9",
+    "no_of_iron_and_folic_acid_combined_pills": "b1e565e0-833e-4c9e-aea4-43ebf781c1e4",
+    "no_of_micronutrient_supplements_pills": "4cbd2972-ec29-4f90-8cbc-591d018f67a8",
     "other_treatment_given": "59560ede-43e2-4e56-a47e-0f876779f0e1",
     "risk_factors": "120186AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     "linked_to_group_anc": "9e68083f-1c4d-4919-9ec1-4a270ed5c975",
@@ -5270,6 +5388,7 @@ CREATE TABLE mamba_obs_group
     obs_id                 INT          NOT NULL,
     obs_group_concept_id   INT          NOT NULL,
     obs_group_concept_name VARCHAR(255) NOT NULL, -- should be the concept name of the obs
+    obs_group_id           INT          NOT NULL,
 
     INDEX mamba_idx_obs_id (obs_id),
     INDEX mamba_idx_obs_group_concept_id (obs_group_concept_id),
@@ -5334,10 +5453,11 @@ DEALLOCATE PREPARE stmt_temp_insert;
 
 -- Insert into the final table from the temp table, including concept data
 SET @sql_obs_group_insert = CONCAT('
-            INSERT INTO mamba_obs_group (obs_group_concept_id, obs_group_concept_name, obs_id)
+            INSERT INTO mamba_obs_group (obs_group_concept_id, obs_group_concept_name, obs_id,obs_group_id)
             SELECT DISTINCT o.obs_question_concept_id,
                             LEFT(c.auto_table_column_name, 12) AS name,
-                            o.obs_id
+                            o.obs_id,
+                            o.obs_group_id
             FROM mamba_temp_obs_group_ids t
                      INNER JOIN mamba_z_encounter_obs o ON t.obs_group_id = o.obs_group_id
                      INNER JOIN mamba_dim_concept c ON o.obs_question_concept_id = c.concept_id
@@ -9642,6 +9762,7 @@ CREATE TABLE mamba_dim_report_definition
     report_id                     VARCHAR(255) NOT NULL UNIQUE,
     report_procedure_name         VARCHAR(255) NOT NULL UNIQUE, -- should be derived from report_id??
     report_columns_procedure_name VARCHAR(255) NOT NULL UNIQUE,
+    report_size_procedure_name    VARCHAR(255) NULL UNIQUE,
     sql_query                     TEXT         NOT NULL,
     table_name                    VARCHAR(255) NOT NULL,        -- name of the table (will contain columns) of this query
     report_name                   VARCHAR(255) NULL,
@@ -13232,24 +13353,15 @@ DROP PROCEDURE IF EXISTS sp_mamba_z_encounter_obs_update;
 ~-~-
 CREATE PROCEDURE sp_mamba_z_encounter_obs_update()
 BEGIN
-    DECLARE v_total_records INT;
-    DECLARE v_batch_size INT DEFAULT 100000; -- batch size
-    DECLARE v_offset INT DEFAULT 0;
-    DECLARE v_rows_affected INT;
-    
-    -- Use a transaction for better error handling and atomicity
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-        DROP TEMPORARY TABLE IF EXISTS mamba_temp_value_coded_values;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An error occurred during the update process';
-    END;
-    
-    START TRANSACTION;
+    DECLARE total_records INT;
+    DECLARE batch_size INT DEFAULT 1000000; -- 1 million batches
+    DECLARE mamba_offset INT DEFAULT 0;
 
-    -- Create temporary table with only the needed values
-    -- This reduces memory usage and improves join performance
-    CREATE TEMPORARY TABLE mamba_temp_value_coded_values
+    SELECT COUNT(*)
+    INTO total_records
+    FROM mamba_z_encounter_obs;
+    CREATE
+        TEMPORARY TABLE mamba_temp_value_coded_values
         CHARSET = UTF8MB4 AS
     SELECT m.concept_id AS concept_id,
            m.uuid       AS concept_uuid,
@@ -13258,41 +13370,28 @@ BEGIN
     WHERE concept_id in (SELECT DISTINCT obs_value_coded
                          FROM mamba_z_encounter_obs
                          WHERE obs_value_coded IS NOT NULL);
-                         
-    -- Create index to optimize joins
+
     CREATE INDEX mamba_idx_concept_id ON mamba_temp_value_coded_values (concept_id);
 
-    -- Get total count for batch processing
-    SELECT COUNT(*)
-    INTO v_total_records
-    FROM mamba_z_encounter_obs z
-             INNER JOIN mamba_temp_value_coded_values mtv
-                        ON z.obs_value_coded = mtv.concept_id
-    WHERE z.obs_value_coded IS NOT NULL;
+    -- update obs_value_coded (UUIDs & Concept value names)
+    WHILE mamba_offset < total_records
+        DO
+            UPDATE mamba_z_encounter_obs z
+                JOIN (SELECT encounter_id
+                      FROM mamba_z_encounter_obs
+                      ORDER BY encounter_id
+                      LIMIT batch_size OFFSET mamba_offset) AS filter
+                ON filter.encounter_id = z.encounter_id
+                INNER JOIN mamba_temp_value_coded_values mtv
+                ON z.obs_value_coded = mtv.concept_id
+            SET z.obs_value_text       = mtv.concept_name,
+                z.obs_value_coded_uuid = mtv.concept_uuid
+            WHERE z.obs_value_coded IS NOT NULL;
 
-    -- Process records in batches to optimize memory usage
-    WHILE v_offset < v_total_records DO
-        -- Update in batches using dynamic SQL
-        SET @sql = CONCAT('UPDATE mamba_z_encounter_obs z
-                    INNER JOIN (
-                        SELECT concept_id, concept_name, concept_uuid
-                        FROM mamba_temp_value_coded_values mtv
-                        LIMIT ', v_batch_size, ' OFFSET ', v_offset, '
-                    ) AS mtv
-                    ON z.obs_value_coded = mtv.concept_id
-                    SET z.obs_value_text = mtv.concept_name,
-                        z.obs_value_coded_uuid = mtv.concept_uuid
-                    WHERE z.obs_value_coded IS NOT NULL');
-        PREPARE stmt FROM @sql;
-        EXECUTE stmt;
-        SET v_rows_affected = ROW_COUNT();
-        DEALLOCATE PREPARE stmt;
+            SET mamba_offset = mamba_offset + batch_size;
+        END WHILE;
 
-        -- Adaptively adjust offset based on actual rows affected
-        SET v_offset = v_offset + IF(v_rows_affected > 0, v_rows_affected, v_batch_size);
-    END WHILE;
-
-    -- Update boolean values based on text representations
+    -- update column obs_value_boolean (Concept values)
     UPDATE mamba_z_encounter_obs z
     SET obs_value_boolean =
             CASE
@@ -13306,9 +13405,6 @@ BEGIN
            FROM mamba_dim_concept c
            WHERE c.datatype = 'Boolean');
 
-    COMMIT;
-    
-    -- Clean up temporary resources
     DROP TEMPORARY TABLE IF EXISTS mamba_temp_value_coded_values;
 
 END;
@@ -14995,6 +15091,8 @@ CREATE TABLE mamba_dim_agegroup
     moh_age_val   INT        NULL,
     moh_2024_age_group VARCHAR(50) NULL,
     moh_2024_age_val   INT        NULL,
+    moh_anc_age_group VARCHAR(50) NULL,
+    moh_anc_age_val   INT        NULL,
     PRIMARY KEY (id)
 )
     CHARSET = UTF8MB4;
@@ -15127,6 +15225,17 @@ CREATE TABLE mamba_fact_encounter_anc_card
     partners_syphilis_hep_b_results    VARCHAR(250) NULL,
     findings_after_clinical_assessment     TEXT         NULL,
     partners_test_for_verification_results VARCHAR(250) NULL,
+    timing VARCHAR(250) NULL,
+    ipt_dose VARCHAR(250) NULL,
+    mother_received_free_llin VARCHAR(250) NULL,
+    mother_received_mebandazole_dose VARCHAR(250) NULL,
+    tetanus VARCHAR(250) NULL,
+    hepatitis_b VARCHAR(250) NULL,
+    covid_19 VARCHAR(250) NULL,
+    no_of_iron_sulphates_pills INT NULL,
+    no_of_folic_acid_pills INT NULL,
+    no_of_iron_and_folic_acid_combined_pills INT NULL ,
+    no_of_micronutrient_supplements_pills INT NULL,
 
     PRIMARY KEY (id)
 ) CHARSET = UTF8;
@@ -15223,7 +15332,18 @@ INSERT INTO mamba_fact_encounter_anc_card (encounter_id,
                                            other_reason_for_next_appointment,
                                            partners_syphilis_hep_b_results,
                                            findings_after_clinical_assessment,
-                                           partners_test_for_verification_results)
+                                           partners_test_for_verification_results,
+                                           timing ,
+                                           ipt_dose ,
+                                           mother_received_free_llin ,
+                                           mother_received_mebandazole_dose ,
+                                           tetanus ,
+                                           hepatitis_b ,
+                                           covid_19 ,
+                                           no_of_iron_sulphates_pills ,
+                                           no_of_folic_acid_pills ,
+                                           no_of_iron_and_folic_acid_combined_pills  ,
+                                           no_of_micronutrient_supplements_pills )
 SELECT a.encounter_id,
        a.client_id,
        a.encounter_datetime,
@@ -15270,7 +15390,18 @@ SELECT a.encounter_id,
        other_reason_for_next_appointment,
        partners_syphilis_hep_b_results,
        findings_after_clinical_assessment,
-       partners_test_for_verification_results
+       partners_test_for_verification_results,
+       timing ,
+       ipt_dose ,
+       mother_received_free_llin ,
+       mother_received_mebandazole_dose ,
+       tetanus ,
+       hepatitis_b ,
+       covid_19 ,
+       no_of_iron_sulphates_pills ,
+       no_of_folic_acid_pills ,
+       no_of_iron_and_folic_acid_combined_pills  ,
+       no_of_micronutrient_supplements_pills
 
 FROM mamba_flat_encounter_anc_register a
          left join mamba_flat_encounter_anc_register_1 b on a.encounter_id = b.encounter_id;
@@ -25375,6 +25506,38 @@ END;
 
         
 -- ---------------------------------------------------------------------------------------------
+-- ----------------------  fn_mamba_calculate_moh_anc_age_group  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP FUNCTION IF EXISTS fn_mamba_calculate_moh_anc_age_group;
+
+
+~-~-
+CREATE FUNCTION fn_mamba_calculate_moh_anc_age_group(age INT) RETURNS VARCHAR(15)
+    DETERMINISTIC
+BEGIN
+    DECLARE agegroup VARCHAR(15);
+    IF age < 15 THEN
+        SET agegroup = 'Below15';
+    ELSEIF age between 15 and 19 THEN
+        SET agegroup = '15-19';
+    ELSEIF age between 20 and 24 THEN
+        SET agegroup = '20-24';
+    ELSEIF age between 25 and 49 THEN
+        SET agegroup = '25-49';
+    ELSE
+        SET agegroup = '50+';
+    END IF;
+
+    RETURN (agegroup);
+END;
+~-~-
+
+
+
+
+        
+-- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_mamba_insert_age_group  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -25387,8 +25550,8 @@ BEGIN
     DECLARE age INT DEFAULT 0;
     WHILE age <= 120
         DO
-            INSERT INTO mamba_dim_agegroup(age, datim_agegroup, normal_agegroup,moh_age_group,moh_2024_age_group)
-            VALUES (age, fn_mamba_calculate_agegroup(age), IF(age < 15, '<15', '15+'),fn_mamba_calculate_moh_age_group(age),fn_mamba_calculate_moh_2024_age_group(age));
+            INSERT INTO mamba_dim_agegroup(age, datim_agegroup, normal_agegroup,moh_age_group,moh_2024_age_group,moh_anc_age_group)
+            VALUES (age, fn_mamba_calculate_agegroup(age), IF(age < 15, '<15', '15+'),fn_mamba_calculate_moh_age_group(age),fn_mamba_calculate_moh_2024_age_group(age),fn_mamba_calculate_moh_anc_age_group(age));
             SET age = age + 1;
         END WHILE;
 END;
