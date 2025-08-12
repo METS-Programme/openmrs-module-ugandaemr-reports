@@ -1305,7 +1305,7 @@
     },
     {
       "indicator_name": "AN07-1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Tuberculosis Clinic' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND b.test_value ='O POSITIVE'\n                       AND b.test_parameter = 'BLOOD TYPING') blooding_grouping\n                    ON blooding_grouping.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -1434,8 +1434,8 @@
       ]
     },
     {
-      "indicator_name": "HT01D3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Tuberculosis Clinic' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN07-2",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND b.test_value ='O NEGATIVE'\n                       AND b.test_parameter = 'BLOOD TYPING') blooding_grouping\n                    ON blooding_grouping.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -1564,8 +1564,8 @@
       ]
     },
     {
-      "indicator_name": "HT01E1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Nutrition Unit' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN07-3",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND b.test_value ='A POSITIVE'\n                       AND b.test_parameter = 'BLOOD TYPING') blooding_grouping\n                    ON blooding_grouping.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -1694,8 +1694,8 @@
       ]
     },
     {
-      "indicator_name": "HT01E2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Nutrition Unit' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN07-4",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND b.test_value ='A NEGATIVE'\n                       AND b.test_parameter = 'BLOOD TYPING') blooding_grouping\n                    ON blooding_grouping.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -1824,8 +1824,8 @@
       ]
     },
     {
-      "indicator_name": "HT01E3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Nutrition Unit' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN07-5",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND b.test_value ='B POSITIVE'\n                       AND b.test_parameter = 'BLOOD TYPING') blooding_grouping\n                    ON blooding_grouping.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -1954,8 +1954,8 @@
       ]
     },
     {
-      "indicator_name": "HT01F1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='STI OUTPATIENT' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN07-6",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND b.test_value ='B NEGATIVE'\n                       AND b.test_parameter = 'BLOOD TYPING') blooding_grouping\n                    ON blooding_grouping.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -2084,8 +2084,8 @@
       ]
     },
     {
-      "indicator_name": "HT01F2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='STI OUTPATIENT' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN07-7",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND b.test_value ='AB POSITIVE'\n                       AND b.test_parameter = 'BLOOD TYPING') blooding_grouping\n                    ON blooding_grouping.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -2214,8 +2214,8 @@
       ]
     },
     {
-      "indicator_name": "HT01F3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='STI OUTPATIENT' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN07-8",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND b.test_value ='AB NEGATIVE'\n                       AND b.test_parameter = 'BLOOD TYPING') blooding_grouping\n                    ON blooding_grouping.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -2344,8 +2344,8 @@
       ]
     },
     {
-      "indicator_name": "HT01G1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='YCC-Young child clinic' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN08",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                      AND b.test_parameter = 'Hemoglobin only') test\n                    ON test.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -2474,8 +2474,8 @@
       ]
     },
     {
-      "indicator_name": "HT01G2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='YCC-Young child clinic' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN09",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id, b.test_value\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                      AND b.test_parameter = 'Hemoglobin only'\n                     AND CAST(b.test_value AS UNSIGNED)< 10 ) test\n                    ON test.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n    AND a.anc_visit_number = '1st ANC visit'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -2604,8 +2604,8 @@
       ]
     },
     {
-      "indicator_name": "HT01G3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='YCC-Young child clinic' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN10-1",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id\n                     FROM mamba_fact_medication_orders b\n                     WHERE b.date_activated BETWEEN ':startDate' AND ':endDate'\n                       AND lower(b.drug) like '%folic%' and b.dose > 29) meds\n                    ON meds.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND gestation_age <=12\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -2734,8 +2734,8 @@
       ]
     },
     {
-      "indicator_name": "HT01H1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Antenatal department' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN10-2",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id\n                     FROM mamba_fact_medication_orders b\n                     WHERE b.date_activated BETWEEN ':startDate' AND ':endDate'\n                       AND lower(b.drug) like '%folic%' and b.dose > 29) meds\n                    ON meds.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND gestation_age >12\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -2864,8 +2864,8 @@
       ]
     },
     {
-      "indicator_name": "HT01H2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Antenatal department' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN11",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND mother_received_free_llin ='YES'\n AND a.anc_visit_number = '1st ANC visit'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -2994,8 +2994,8 @@
       ]
     },
     {
-      "indicator_name": "HT01H3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Antenatal department' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN12-1",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND woa_scan_done ='YES'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -3124,8 +3124,8 @@
       ]
     },
     {
-      "indicator_name": "HT01I1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Maternity department' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN012-2",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND woa_scan_done ='YES'\n  AND gestation_age < 24 \nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -3254,8 +3254,8 @@
       ]
     },
     {
-      "indicator_name": "HT01I2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Maternity department' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN013",
+      "sqlQuery": "SELECT  COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id\n                     FROM mamba_fact_medication_orders b\n                     WHERE b.date_activated BETWEEN ':startDate' AND ':endDate'\n                       AND lower(b.drug) like '%mabendazole%') meds\n                    ON meds.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -3384,8 +3384,8 @@
       ]
     },
     {
-      "indicator_name": "HT01I3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Maternity department' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN014-1",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nand lower(a.womans_syphilis_hep_b_results) like '%reactive%'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -3514,8 +3514,8 @@
       ]
     },
     {
-      "indicator_name": "HT01J1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Postnatal Clinic' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN014-2",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nand a.womans_syphilis_hep_b_results in ('Reactive for syphilis and given treatment','Reactive for syphilis but not yet treated')\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -3644,8 +3644,8 @@
       ]
     },
     {
-      "indicator_name": "HT01J2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Postnatal Clinic' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN014-3",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nand a.womans_syphilis_hep_b_results ='Reactive for syphilis and given treatment'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -3774,8 +3774,8 @@
       ]
     },
     {
-      "indicator_name": "HT01J3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Postnatal Clinic' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN015-1",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nand lower(a.partners_syphilis_hep_b_results) like '%reactive%'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -3904,8 +3904,8 @@
       ]
     },
     {
-      "indicator_name": "HT01K1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Family Planning department' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN015-2",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nand a.partners_syphilis_hep_b_results in ('Reactive for syphilis and given treatment','Reactive for syphilis but not yet treated')\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -4034,8 +4034,8 @@
       ]
     },
     {
-      "indicator_name": "HT01K2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Family Planning department' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN016-1",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id\n                     FROM mamba_fact_test_orders b\n                     WHERE b.date_activated BETWEEN ':startDate' AND ':endDate'\n                       AND LOWER(b.test_name) LIKE '%hepatitis%') tests\n                    ON tests.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -4164,8 +4164,8 @@
       ]
     },
     {
-      "indicator_name": "HT01K3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Family Planning department' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN016-2",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\n         INNER JOIN (SELECT b.client_id\n                     FROM mamba_fact_test_orders_results b\n                     WHERE b.encounter_datetime BETWEEN ':startDate' AND ':endDate'\n                       AND LOWER(b.test_parameter) LIKE '%hepatitis%' AND test_value='POSITIVE')tests\n                    ON tests.client_id = a.client_id\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -4294,8 +4294,8 @@
       ]
     },
     {
-      "indicator_name": "HT01L1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='SMC Clinic' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN017-1",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n and (womans_initial_result like '%client tested%' or womans_initial_result = 'Inconclusive HIV Results')\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -4424,8 +4424,8 @@
       ]
     },
     {
-      "indicator_name": "HT01L2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='SMC Clinic' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN017-2",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n and (womans_initial_result like '%client tested%' or womans_initial_result = 'Inconclusive HIV Results')\nAND a.anc_visit_number = '1st ANC visit'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -4554,8 +4554,8 @@
       ]
     },
     {
-      "indicator_name": "HT01L3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='SMC Clinic' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN018-1",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n and womans_initial_result like '%client tested HIV Positive%'  and timing like '%1st Time%'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -4684,8 +4684,8 @@
       ]
     },
     {
-      "indicator_name": "HT01M1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Mother Baby Pair Clinic' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN018-2",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n and womans_initial_result like '%client tested HIV Positive%'  and timing like '%1st Time%'\n  AND a.anc_visit_number = '1st ANC visit'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -4814,8 +4814,8 @@
       ]
     },
     {
-      "indicator_name": "HT01M2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Mother Baby Pair Clinic' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN019",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n and cd4 is not NULL\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -4944,8 +4944,8 @@
       ]
     },
     {
-      "indicator_name": "HT01M3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='Mother Baby Pair Clinic' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN020",
+      "sqlQuery": "SELECT COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n and art_codes= 'Initiated ART for eMTCT on that visit'\nGROUP BY a.client_id;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -5074,8 +5074,8 @@
       ]
     },
     {
-      "indicator_name": "HT01N1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='OTHER SPECIFY' and current_hiv_test_result is not NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN021-NEG",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.anc_visit_number = '1st ANC visit'\nand timing = 'Retest: Client re-tested for HIV during this visit'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -5204,8 +5204,8 @@
       ]
     },
     {
-      "indicator_name": "HT01N2",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='OTHER SPECIFY' and current_hiv_test_result='HIV+' and hiv_first_time_tester='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN021-POS",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.anc_visit_number = '1st ANC visit'\nand timing like '%Known POS%' \nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
