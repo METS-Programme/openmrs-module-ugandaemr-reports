@@ -5334,8 +5334,8 @@
       ]
     },
     {
-      "indicator_name": "HT01N3",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.hct_entry_point ='OTHER SPECIFY' and current_hiv_test_result='HIV+' and has_client_been_linked_to_care='YES'\nGROUP BY age_group, gender;",
+      "indicator_name": "AN022-NEG",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.anc_visit_number <>'1st ANC visit' and anc_visit_number is not NULL\nand art_codes  like '%client tested HIV Negative%'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
@@ -5464,8 +5464,8 @@
       ]
     },
     {
-      "indicator_name": "HT02A1",
-      "sqlQuery": "SELECT mda.moh_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_hts_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.community_testing_point = 'Work Place (HCT)'\n  AND current_hiv_test_result IS NOT NULL\nGROUP BY age_group, gender;",
+      "indicator_name": "AN022-POS",
+      "sqlQuery": "SELECT mda.moh_anc_age_group AS age_group, gender, COUNT(a.client_id)\nFROM mamba_fact_encounter_anc_card a\n         INNER JOIN mamba_fact_patients_latest_patient_demographics mdp ON a.client_id = mdp.patient_id\n         LEFT JOIN mamba_dim_agegroup mda ON mda.age = mdp.age\nWHERE a.encounter_date BETWEEN ':startDate' AND ':endDate'\n  AND a.anc_visit_number <>'1st ANC visit' and anc_visit_number is not NULL\nand art_codes  like '%client tested HIV Positive%'\nGROUP BY age_group, gender;",
       "dissaggregations": [
         "age_group",
         "gender"
