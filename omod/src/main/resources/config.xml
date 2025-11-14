@@ -2,401 +2,406 @@
 
 <module configVersion="1.2">
 
-    <!-- Module Properties -->
-    <id>${project.parent.artifactId}</id>
-    <name>${project.parent.name}</name>
-    <version>${project.parent.version}</version>
-    <package>${project.parent.groupId}.${project.parent.artifactId}</package>
-    <author>METS Program</author>
-    <description>
-        ${project.parent.description}
-    </description>
-    <updateURL>https://modules.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
-    <require_version>${openMRSVersion}</require_version>
-    <!-- / Module Properties -->
-
-
-    <!-- Module Activator -->
-    <activator>${project.parent.groupId}.${project.parent.artifactId}.activator.UgandaEMRReportsActivator</activator>
-
-    <require_modules>
-        <require_module>
-            org.openmrs.module.ugandaemr
-        </require_module>
-        <require_module>
-            org.openmrs.module.metadatadeploy
-        </require_module>
-        <require_module>
-            org.openmrs.module.reporting
-        </require_module>
-        <require_module>
-            org.openmrs.module.serialization.xstream
-        </require_module>
-        <require_module>
-            org.openmrs.module.legacyui
-        </require_module>
-        <require_module>
-            org.openmrs.module.reportingcompatibility
-        </require_module>
-    </require_modules>
-
-    <privilege>
-        <name>App: ugandaemr.reports</name>
-        <description>Access to UgandaEMR Reports</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemr.reports</name>
-        <description>ugandaemr report access privillege</description>
-    </privilege>
-    <privilege>
-        <name>App: ugandaemrreports.UgandaEMRReports2014HMISTools</name>
-        <description>UgandaEMR Reports 2014 HMIS Tools report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.UgandaEMRReports2019HMISTools</name>
-        <description>UgandaEMR Reports 2019 HMIS Tools report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.HMIS106aSection1A</name>
-        <description>HMIS106a Section 1A report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.HMIS106aSection1B</name>
-        <description>HMIS106a Section 1B report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.CBSAdultQuarterlyReport</name>
-        <description>CBS Adult Quarterly Report report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.HMIS177ViralLoadAddendumQuarterlyReport</name>
-        <description>HMIS177 Viral Load Addendum Quarterly Report report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.appointmentList</name>
-        <description>Appointment List report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.missedAppointmentList</name>
-        <description>Missed Appointment List report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.ARTPatientExport</name>
-        <description>ART Patient Export report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.exposedInfantDuefor1stPCR</name>
-        <description>Exposed Infant Due for 1st PCR report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.exposedInfantsDuefor2ndPCRR</name>
-        <description>Exposed Infants Due for 2nd PCRR report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.exposedInfantsDueforRapidTest</name>
-        <description>Exposed Infants Due for Rapid Test report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.exposedInfantsDueforAppointment</name>
-        <description>Exposed Infants Due for Appointment report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.optionBWeeklySMSReport</name>
-        <description>OptionB+ Weekly SMS report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.transferOutList</name>
-        <description>transferOutListreport access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.transferInList</name>
-        <description>report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.lostClients</name>
-        <description>transferInList report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.lostToFollowUp</name>
-        <description>report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.activePatientsInCare</name>
-        <description>lostToFollowUp report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.dueForViralLoad</name>
-        <description>dueForViralLoad report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.overdueforViralLoad</name>
-        <description>overdueforViralLoad report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.nonSuppressedViralLoad</name>
-        <description>nonSuppressedViralLoad report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.hCTCardDataExport</name>
-        <description>hCTCardDataExport report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.DSDMStablityAssessmentReport</name>
-        <description>DSDMStablityAssessmentReport report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.patientDSDMModelReport</name>
-        <description>patientDSDMModelReport report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.OPDRegister</name>
-        <description>OPDRegister report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.SMCRegister</name>
-        <description>SMCRegister report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.patientAppointmentBook</name>
-        <description>patientAppointmentBook report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.HMIS055-HCTRegister</name>
-        <description>HMIS 055-HCT Register access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.ANCRegister</name>
-        <description>ANC Register access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.maternityRegister</name>
-        <description>Maternity Register access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.PNCRegister</name>
-        <description>PNC Register access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.pre-ARTRegister</name>
-        <description>Pre-ART Register access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.ARTRegister</name>
-        <description>ART Register access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.EIDRegister</name>
-        <description>EID Register access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.TBRegister</name>
-        <description>TB Register access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.caseBasedSurveillanceEIDReport</name>
-        <description>CaseBased Surveillance EID report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.adherenceReport</name>
-        <description>Adherence Report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.HMIS105</name>
-        <description>HMIS105 report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.HCAReport</name>
-        <description>HCA report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.EWILostToFollowUp</name>
-        <description>EWI Lost ToFollow Up report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERTxCurrent_30DaysReport</name>
-        <description>MER Tx Current_30 Days report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERTxCurrent_90DaysReport</name>
-        <description>MER Tx Current_90 Days Report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERTxNewReport</name>
-        <description>MER Tx New Report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERTBSTATReport</name>
-        <description>MER TB STAT Report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERTBARTReport</name>
-        <description>MER TB ART Report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERPMTCTSTATReport</name>
-        <description>MER PMTCT STAT Report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERTX_TB</name>
-        <description>MER TX_TB report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.pillPickup</name>
-        <description>Pill Pickup report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.viralLoadSupression</name>
-        <description>Viral Load Supression report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.HMIS106aWithDSDMAggregations</name>
-        <description>HMIS 106a With DSDM Aggregations report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERHTSRECENTReport</name>
-        <description>MER HTS RECENT report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.MERHCTTSTFacilityReport</name>
-        <description>MER HCT TST Facility Report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.appointmentsList</name>
-        <description>Appointments List report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.missedAppointmentsList</name>
-        <description>Missed Appointments List report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.facilityDeathList</name>
-        <description>Facility Death List report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.exposedInfantsDuefor1stPCR</name>
-        <description>Exposed Infants Due for 1st PCR report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.exposedInfantsDuefor2ndPCR</name>
-        <description>Exposed Infants Due for 2nd PCR report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.exposedInfantsDueforRapidTest</name>
-        <description>Exposed Infants Due for Rapid Test report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.exposedInfantsDueforAppointment</name>
-        <description>Exposed Infants Due for Appointment report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.HTSClientCardDataExport</name>
-        <description>HTS Client Card Data Export report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.DSDMStablityAssessmentReport</name>
-        <description>DSDM Stablity Assessment report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.familyConnectEMTCTModuleDataExport</name>
-        <description>Family Connect EMTCT Module Data Export report access privillege</description>
-    </privilege>
-
-    <privilege>
-        <name>App: ugandaemrreports.recencyHTSClientCardDataExport</name>
-        <description>Recency HTS Client Card Data Export report access privillege</description>
-    </privilege>
-
-    <!-- Maps hibernate file's, if present -->
-    <mappingFiles>
-
-    </mappingFiles>
-
-    <!-- Internationalization -->
-    <!-- All message codes should start with ${project.parent.artifactId}. -->
-    <messages>
-        <lang>en</lang>
-        <file>messages.properties</file>
-    </messages>
-    <messages>
-        <lang>fr</lang>
-        <file>messages_fr.properties</file>
-    </messages>
-    <messages>
-        <lang>es</lang>
-        <file>messages_es.properties</file>
-    </messages>
-    <!-- /Internationalization -->
-
-
-    <globalProperty>
-        <property>ugandaemrreports.mamba.flatten.last.successful.run.date</property>
-        <defaultValue></defaultValue>
-        <description>The last successful run date for mamba flatten</description>
-    </globalProperty>
-
+	<!-- Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
+	<author>METS Program</author>
+	<description>
+		${project.parent.description}
+	</description>
+	<updateURL>https://modules.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
+	<require_version>${openMRSVersion}</require_version>
+	<!-- / Module Properties -->
+
+
+	<!-- Module Activator -->
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.activator.UgandaEMRReportsActivator</activator>
+
+	<require_modules>
+		<require_module>
+			org.openmrs.module.appframework
+		</require_module>
+		<require_module>
+			org.openmrs.module.appui
+		</require_module>
+		<require_module>
+			org.openmrs.module.metadatadeploy
+		</require_module>
+		<require_module>
+			org.openmrs.module.reporting
+		</require_module>
+		<require_module>
+			org.openmrs.module.serialization.xstream
+		</require_module>
+		<require_module>
+			org.openmrs.module.uiframework
+		</require_module>
+		<require_module>
+			org.openmrs.module.legacyui
+		</require_module>
+		<require_module>
+			org.openmrs.module.reportingcompatibility
+		</require_module>
+	</require_modules>
+
+	<privilege>
+		<name>App: ugandaemr.reports</name>
+		<description>Access to UgandaEMR Reports</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemr.reports</name>
+		<description>ugandaemr report access privillege</description>
+	</privilege>
+	<privilege>
+		<name>App: ugandaemrreports.UgandaEMRReports2014HMISTools</name>
+		<description>UgandaEMR Reports 2014 HMIS Tools report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.UgandaEMRReports2019HMISTools</name>
+		<description>UgandaEMR Reports 2019 HMIS Tools report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.HMIS106aSection1A</name>
+		<description>HMIS106a Section 1A report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.HMIS106aSection1B</name>
+		<description>HMIS106a Section 1B report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.CBSAdultQuarterlyReport</name>
+		<description>CBS Adult Quarterly Report report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.HMIS177ViralLoadAddendumQuarterlyReport</name>
+		<description>HMIS177 Viral Load Addendum Quarterly Report report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.appointmentList</name>
+		<description>Appointment List report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.missedAppointmentList</name>
+		<description>Missed Appointment List report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.ARTPatientExport</name>
+		<description>ART Patient Export report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.exposedInfantDuefor1stPCR</name>
+		<description>Exposed Infant Due for 1st PCR report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.exposedInfantsDuefor2ndPCRR</name>
+		<description>Exposed Infants Due for 2nd PCRR report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.exposedInfantsDueforRapidTest</name>
+		<description>Exposed Infants Due for Rapid Test report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.exposedInfantsDueforAppointment</name>
+		<description>Exposed Infants Due for Appointment report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.optionBWeeklySMSReport</name>
+		<description>OptionB+ Weekly SMS  report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.transferOutList</name>
+		<description> transferOutListreport access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.transferInList</name>
+		<description> report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.lostClients</name>
+		<description> transferInList report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.lostToFollowUp</name>
+		<description> report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.activePatientsInCare</name>
+		<description>lostToFollowUp report access privillege</description>
+	</privilege>
+
+	<privilege>
+	<name>App: ugandaemrreports.dueForViralLoad</name>
+		<description>dueForViralLoad report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.overdueforViralLoad</name>
+		<description>overdueforViralLoad report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.nonSuppressedViralLoad</name>
+		<description>nonSuppressedViralLoad report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.hCTCardDataExport</name>
+		<description>hCTCardDataExport report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.DSDMStablityAssessmentReport</name>
+		<description>DSDMStablityAssessmentReport report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.patientDSDMModelReport</name>
+		<description>patientDSDMModelReport report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.OPDRegister</name>
+		<description>OPDRegister report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.SMCRegister</name>
+		<description>SMCRegister report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.patientAppointmentBook</name>
+		<description>patientAppointmentBook report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.HMIS055-HCTRegister</name>
+		<description>HMIS 055-HCT Register access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.ANCRegister</name>
+		<description>ANC Register access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.maternityRegister</name>
+		<description>Maternity Register  access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.PNCRegister</name>
+		<description>PNC Register  access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.pre-ARTRegister</name>
+		<description>Pre-ART Register  access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.ARTRegister</name>
+		<description>ART Register access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.EIDRegister</name>
+		<description>EID Register access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.TBRegister</name>
+		<description>TB Register access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.caseBasedSurveillanceEIDReport</name>
+		<description>CaseBased Surveillance EID report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.adherenceReport</name>
+		<description>Adherence Report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.HMIS105</name>
+		<description>HMIS105 report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.HCAReport</name>
+		<description>HCA  report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.EWILostToFollowUp</name>
+		<description>EWI Lost ToFollow Up report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERTxCurrent_30DaysReport</name>
+		<description>MER Tx Current_30 Days report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERTxCurrent_90DaysReport</name>
+		<description>MER Tx Current_90 Days Report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERTxNewReport</name>
+		<description>MER Tx New Report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERTBSTATReport</name>
+		<description>MER TB STAT Report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERTBARTReport</name>
+		<description>MER TB ART Report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERPMTCTSTATReport</name>
+		<description>MER PMTCT STAT Report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERTX_TB</name>
+		<description>MER TX_TB report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.pillPickup</name>
+		<description>Pill Pickup report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.viralLoadSupression</name>
+		<description>Viral Load Supression report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.HMIS106aWithDSDMAggregations</name>
+		<description>HMIS 106a With DSDM Aggregations report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERHTSRECENTReport</name>
+		<description>MER HTS RECENT report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.MERHCTTSTFacilityReport</name>
+		<description>MER HCT TST Facility Report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.appointmentsList</name>
+		<description>Appointments List report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.missedAppointmentsList</name>
+		<description>Missed Appointments List report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.facilityDeathList</name>
+		<description>Facility Death List report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.exposedInfantsDuefor1stPCR</name>
+		<description>Exposed Infants Due for 1st PCR report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.exposedInfantsDuefor2ndPCR</name>
+		<description>Exposed Infants Due for 2nd PCR report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.exposedInfantsDueforRapidTest</name>
+		<description>Exposed Infants Due for Rapid Test report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.exposedInfantsDueforAppointment</name>
+		<description>Exposed Infants Due for Appointment report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.HTSClientCardDataExport</name>
+		<description>HTS Client Card Data Export report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.DSDMStablityAssessmentReport</name>
+		<description>DSDM Stablity Assessment report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.familyConnectEMTCTModuleDataExport</name>
+		<description>Family Connect EMTCT Module Data Export report access privillege</description>
+	</privilege>
+
+	<privilege>
+		<name>App: ugandaemrreports.recencyHTSClientCardDataExport</name>
+		<description>Recency HTS Client Card Data Export report access privillege</description>
+	</privilege>
+
+	<!-- Maps hibernate file's, if present -->
+	<mappingFiles>
+
+	</mappingFiles>
+
+	<!-- Internationalization -->
+	<!-- All message codes should start with ${project.parent.artifactId}. -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
+
+	<globalProperty>
+		<property>ugandaemrreports.mamba.flatten.last.successful.run.date</property>
+		<defaultValue></defaultValue>
+		<description>The last successful run date for mamba flatten</description>
+	</globalProperty>
 
     <globalProperty>
         <!-- Name of the GP; "ugandaemrreports" can be replaced with ${project.parent.artifactId} if you prefer -->
@@ -411,6 +416,5 @@
             Whitelist ugandaemrreports classes for XStream deserialization (TRUNK-6188)
         </description>
     </globalProperty>
-
 </module>
 
