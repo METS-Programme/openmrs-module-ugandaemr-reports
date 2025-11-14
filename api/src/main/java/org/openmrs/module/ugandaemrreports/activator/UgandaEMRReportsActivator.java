@@ -3,12 +3,12 @@
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://license.openmrs.org
- * <p>
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
- * <p>
+ *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.ugandaemrreports.activator;
@@ -29,16 +29,15 @@ import org.openmrs.module.mambacore.api.FlattenDatabaseService;
  */
 public class UgandaEMRReportsActivator extends BaseModuleActivator {
 
-    protected Log log = LogFactory.getLog(getClass());
+	protected Log log = LogFactory.getLog(getClass());
 
-    File folder = FileUtils.toFile(UgandaEMRReportsActivator.class.getClassLoader().getResource("report_designs"));
-
-    public List<Initializer> getInitializers() {
-        List<Initializer> l = new ArrayList<Initializer>();
-        l.add(new AppConfigInitializer());
-        l.add(new ReportInitializer());
-        return l;
-    }
+	File folder = FileUtils.toFile(UgandaEMRReportsActivator.class.getClassLoader().getResource("report_designs"));
+	public List<Initializer> getInitializers() {
+		List<Initializer> l = new ArrayList<Initializer>();
+		l.add(new AppConfigInitializer());
+		l.add(new ReportInitializer());
+		return l;
+	}
 
     @Override
     public void started() {
@@ -54,12 +53,12 @@ public class UgandaEMRReportsActivator extends BaseModuleActivator {
         }
     }
 
-    @Override
-    public void stopped() {
-        Context.getService(FlattenDatabaseService.class).shutdownEtlThread();
-        for (int i = getInitializers().size() - 1; i >= 0; i--) {
-            getInitializers().get(i).stopped();
-        }
-        log.info("UgandaEMR Reports module stopped");
-    }
+	@Override
+	public void stopped() {
+		Context.getService(FlattenDatabaseService.class).shutdownEtlThread();
+		for (int i = getInitializers().size() - 1; i >= 0; i--) {
+			getInitializers().get(i).stopped();
+		}
+		log.info("UgandaEMR Reports module stopped");
+	}
 }
