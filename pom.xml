@@ -38,8 +38,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- module version defeinitions -->
-        <appframeworkVersion>2.4</appframeworkVersion>
-        <appuiVersion>1.6</appuiVersion>
         <calculationVersion>1.1</calculationVersion>
         <luceneVersion>6.6.0</luceneVersion>
         <metadatadeployVersion>1.6</metadatadeployVersion>
@@ -47,7 +45,6 @@
         <metadatasharingVersion>1.1.9</metadatasharingVersion>
         <reportingVersion>1.25.0</reportingVersion>
         <serialization.xstreamVersion>0.2.10</serialization.xstreamVersion>
-        <uiframeworkModuleVersion>3.6</uiframeworkModuleVersion>
         <webservices.restModuleVersion>2.28.0</webservices.restModuleVersion>
         <reportingCompatibilityVersion>2.0.9</reportingCompatibilityVersion>
         <mambaETLCoreVersion>1.0.1-SNAPSHOT</mambaETLCoreVersion>
@@ -100,20 +97,6 @@
             <!-- End OpenMRS core -->
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>appframework-omod</artifactId>
-                <version>${appframeworkVersion}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.openmrs.module</groupId>
-                <artifactId>appui-omod</artifactId>
-                <version>${appuiVersion}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.openmrs.module</groupId>
                 <artifactId>calculation-api</artifactId>
                 <version>${calculationVersion}</version>
                 <scope>provided</scope>
@@ -154,13 +137,6 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>serialization.xstream-api</artifactId>
                 <version>${serialization.xstreamVersion}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.openmrs.module</groupId>
-                <artifactId>uiframework-api</artifactId>
-                <version>${uiframeworkModuleVersion}</version>
                 <scope>provided</scope>
             </dependency>
 

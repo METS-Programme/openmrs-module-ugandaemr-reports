@@ -53,11 +53,6 @@
         <!-- End OpenMRS core -->
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>appframework-omod</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
             <artifactId>calculation-api</artifactId>
         </dependency>
 
