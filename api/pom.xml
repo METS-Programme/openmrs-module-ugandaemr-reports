@@ -7,7 +7,7 @@
     </parent>
 
     <artifactId>ugandaemrreports-api</artifactId>
-  <version>2.1.5-SNAPSHOT</version>
+    <version>2.1.5-SNAPSHOT</version>
     <name>UgandaEMR Reports Module API</name>
     <description>API project for UgandaEMR Reports</description>
 
@@ -51,11 +51,6 @@
         </dependency>
 
         <!-- End OpenMRS core -->
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>appframework-omod</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>calculation-api</artifactId>

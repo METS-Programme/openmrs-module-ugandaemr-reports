@@ -33,7 +33,7 @@ import org.openmrs.util.OpenmrsUtil;
  * This class contains the logic that is run every time this module is either started or stopped.
  */
 public class UgandaEMRReportsActivator extends BaseModuleActivator {
-	
+
 	protected Log log = LogFactory.getLog(getClass());
 
 	File folder = FileUtils.toFile(UgandaEMRReportsActivator.class.getClassLoader().getResource("report_designs"));
@@ -44,15 +44,20 @@ public class UgandaEMRReportsActivator extends BaseModuleActivator {
 		return l;
 	}
 
-	@Override
-	public void started() {
-		log.info("UgandaEMR Reports module started - initializing...");
-		addMambaetlProperties();
-		Context.getService(FlattenDatabaseService.class).setupEtl();
-		for (Initializer initializer : getInitializers()) {
-			initializer.started();
-		}
-	}
+    @Override
+    public void started() {
+        log.info("UgandaEMR Reports module started - initializing...");
+
+        try {
+            addMambaetlProperties();
+            Context.getService(FlattenDatabaseService.class).setupEtl();
+            for (Initializer initializer : getInitializers()) {
+                initializer.started();
+            }
+        } catch (Exception e) {
+            log.error("Error starting UgandaEMR Reports module", e);
+        }
+    }
 
 	@Override
 	public void stopped() {
