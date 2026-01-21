@@ -121,4 +121,8 @@ public interface UgandaEMRReportsService extends OpenmrsService {
     List<Concept> getCodedOrderReasons(OrderType orderType);
 
     Map<Integer, Map<String, Object>> getDrugOrderByIndicator(org.openmrs.cohort.Cohort patients,String drugIndication,OrderType orderType);
+
+    public  void addMambaetlProperties();
+
+    public void setupMambaETL();
 }
