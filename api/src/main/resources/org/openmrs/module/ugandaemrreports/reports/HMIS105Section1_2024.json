@@ -1,0 +1,1461 @@
+{
+  "version": 2,
+  "dimensions": {
+    "sex": [
+      {
+        "id": "M",
+        "label": "Male"
+      },
+      {
+        "id": "F",
+        "label": "Female"
+      }
+    ],
+    "age_opd": [
+      {
+        "id": "0_28d",
+        "label": "0_28d"
+      },
+      {
+        "id": "10_19",
+        "label": "10_19"
+      },
+      {
+        "id": "20p",
+        "label": "20p"
+      },
+      {
+        "id": "29d_4y",
+        "label": "29d_4y"
+      },
+      {
+        "id": "5_9",
+        "label": "5_9"
+      }
+    ],
+    "age_na01a": [
+      {
+        "id": "0_5m",
+        "label": "0_5m"
+      },
+      {
+        "id": "10_19",
+        "label": "10_19"
+      },
+      {
+        "id": "20_24",
+        "label": "20_24"
+      },
+      {
+        "id": "24_59m",
+        "label": "24_59m"
+      },
+      {
+        "id": "25p",
+        "label": "25p"
+      },
+      {
+        "id": "5_9",
+        "label": "5_9"
+      },
+      {
+        "id": "6_23m",
+        "label": "6_23m"
+      }
+    ],
+    "age_na01b": [
+      {
+        "id": "MAM_0_5m",
+        "label": "MAM_0_5m"
+      },
+      {
+        "id": "MAM_10_19",
+        "label": "MAM_10_19"
+      },
+      {
+        "id": "MAM_20_24",
+        "label": "MAM_20_24"
+      },
+      {
+        "id": "MAM_24_59m",
+        "label": "MAM_24_59m"
+      },
+      {
+        "id": "MAM_25p",
+        "label": "MAM_25p"
+      },
+      {
+        "id": "MAM_5_9",
+        "label": "MAM_5_9"
+      },
+      {
+        "id": "MAM_6_23m",
+        "label": "MAM_6_23m"
+      },
+      {
+        "id": "Overweight_Obese_0_5m",
+        "label": "Overweight_Obese_0_5m"
+      },
+      {
+        "id": "Overweight_Obese_10_19",
+        "label": "Overweight_Obese_10_19"
+      },
+      {
+        "id": "Overweight_Obese_20_24",
+        "label": "Overweight_Obese_20_24"
+      },
+      {
+        "id": "Overweight_Obese_24_59m",
+        "label": "Overweight_Obese_24_59m"
+      },
+      {
+        "id": "Overweight_Obese_25p",
+        "label": "Overweight_Obese_25p"
+      },
+      {
+        "id": "Overweight_Obese_5_9",
+        "label": "Overweight_Obese_5_9"
+      },
+      {
+        "id": "Overweight_Obese_6_23m",
+        "label": "Overweight_Obese_6_23m"
+      },
+      {
+        "id": "SAM_With_Oedema_0_5m",
+        "label": "SAM_With_Oedema_0_5m"
+      },
+      {
+        "id": "SAM_With_Oedema_10_19",
+        "label": "SAM_With_Oedema_10_19"
+      },
+      {
+        "id": "SAM_With_Oedema_20_24",
+        "label": "SAM_With_Oedema_20_24"
+      },
+      {
+        "id": "SAM_With_Oedema_24_59m",
+        "label": "SAM_With_Oedema_24_59m"
+      },
+      {
+        "id": "SAM_With_Oedema_25p",
+        "label": "SAM_With_Oedema_25p"
+      },
+      {
+        "id": "SAM_With_Oedema_5_9",
+        "label": "SAM_With_Oedema_5_9"
+      },
+      {
+        "id": "SAM_With_Oedema_6_23m",
+        "label": "SAM_With_Oedema_6_23m"
+      },
+      {
+        "id": "SAM_Without_Oedema_0_5m",
+        "label": "SAM_Without_Oedema_0_5m"
+      },
+      {
+        "id": "SAM_Without_Oedema_10_19",
+        "label": "SAM_Without_Oedema_10_19"
+      },
+      {
+        "id": "SAM_Without_Oedema_20_24",
+        "label": "SAM_Without_Oedema_20_24"
+      },
+      {
+        "id": "SAM_Without_Oedema_24_59m",
+        "label": "SAM_Without_Oedema_24_59m"
+      },
+      {
+        "id": "SAM_Without_Oedema_25p",
+        "label": "SAM_Without_Oedema_25p"
+      },
+      {
+        "id": "SAM_Without_Oedema_5_9",
+        "label": "SAM_Without_Oedema_5_9"
+      },
+      {
+        "id": "SAM_Without_Oedema_6_23m",
+        "label": "SAM_Without_Oedema_6_23m"
+      },
+      {
+        "id": "Underweight_0_5m",
+        "label": "Underweight_0_5m"
+      },
+      {
+        "id": "Underweight_10_19",
+        "label": "Underweight_10_19"
+      },
+      {
+        "id": "Underweight_20_24",
+        "label": "Underweight_20_24"
+      },
+      {
+        "id": "Underweight_24_59m",
+        "label": "Underweight_24_59m"
+      },
+      {
+        "id": "Underweight_25p",
+        "label": "Underweight_25p"
+      },
+      {
+        "id": "Underweight_5_9",
+        "label": "Underweight_5_9"
+      },
+      {
+        "id": "Underweight_6_23m",
+        "label": "Underweight_6_23m"
+      }
+    ],
+    "age_na02": [
+      {
+        "id": "active_prev_0_5m",
+        "label": "active_prev_0_5m"
+      },
+      {
+        "id": "active_prev_10_19",
+        "label": "active_prev_10_19"
+      },
+      {
+        "id": "active_prev_20_24",
+        "label": "active_prev_20_24"
+      },
+      {
+        "id": "active_prev_24_59m",
+        "label": "active_prev_24_59m"
+      },
+      {
+        "id": "active_prev_25p",
+        "label": "active_prev_25p"
+      },
+      {
+        "id": "active_prev_5_9",
+        "label": "active_prev_5_9"
+      },
+      {
+        "id": "active_prev_6_23m",
+        "label": "active_prev_6_23m"
+      },
+      {
+        "id": "new_admissions_0_5m",
+        "label": "new_admissions_0_5m"
+      },
+      {
+        "id": "new_admissions_10_19",
+        "label": "new_admissions_10_19"
+      },
+      {
+        "id": "new_admissions_20_24",
+        "label": "new_admissions_20_24"
+      },
+      {
+        "id": "new_admissions_24_59m",
+        "label": "new_admissions_24_59m"
+      },
+      {
+        "id": "new_admissions_25p",
+        "label": "new_admissions_25p"
+      },
+      {
+        "id": "new_admissions_5_9",
+        "label": "new_admissions_5_9"
+      },
+      {
+        "id": "new_admissions_6_23m",
+        "label": "new_admissions_6_23m"
+      },
+      {
+        "id": "readm_defaulters_0_5m",
+        "label": "readm_defaulters_0_5m"
+      },
+      {
+        "id": "readm_defaulters_10_19",
+        "label": "readm_defaulters_10_19"
+      },
+      {
+        "id": "readm_defaulters_20_24",
+        "label": "readm_defaulters_20_24"
+      },
+      {
+        "id": "readm_defaulters_24_59m",
+        "label": "readm_defaulters_24_59m"
+      },
+      {
+        "id": "readm_defaulters_25p",
+        "label": "readm_defaulters_25p"
+      },
+      {
+        "id": "readm_defaulters_5_9",
+        "label": "readm_defaulters_5_9"
+      },
+      {
+        "id": "readm_defaulters_6_23m",
+        "label": "readm_defaulters_6_23m"
+      },
+      {
+        "id": "readm_relapse_0_5m",
+        "label": "readm_relapse_0_5m"
+      },
+      {
+        "id": "readm_relapse_10_19",
+        "label": "readm_relapse_10_19"
+      },
+      {
+        "id": "readm_relapse_20_24",
+        "label": "readm_relapse_20_24"
+      },
+      {
+        "id": "readm_relapse_24_59m",
+        "label": "readm_relapse_24_59m"
+      },
+      {
+        "id": "readm_relapse_25p",
+        "label": "readm_relapse_25p"
+      },
+      {
+        "id": "readm_relapse_5_9",
+        "label": "readm_relapse_5_9"
+      },
+      {
+        "id": "readm_relapse_6_23m",
+        "label": "readm_relapse_6_23m"
+      },
+      {
+        "id": "transfer_in_0_5m",
+        "label": "transfer_in_0_5m"
+      },
+      {
+        "id": "transfer_in_10_19",
+        "label": "transfer_in_10_19"
+      },
+      {
+        "id": "transfer_in_20_24",
+        "label": "transfer_in_20_24"
+      },
+      {
+        "id": "transfer_in_24_59m",
+        "label": "transfer_in_24_59m"
+      },
+      {
+        "id": "transfer_in_25p",
+        "label": "transfer_in_25p"
+      },
+      {
+        "id": "transfer_in_5_9",
+        "label": "transfer_in_5_9"
+      },
+      {
+        "id": "transfer_in_6_23m",
+        "label": "transfer_in_6_23m"
+      }
+    ],
+    "age_na03": [
+      {
+        "id": "defaulted_0_5m",
+        "label": "defaulted_0_5m"
+      },
+      {
+        "id": "defaulted_10_19",
+        "label": "defaulted_10_19"
+      },
+      {
+        "id": "defaulted_20_24",
+        "label": "defaulted_20_24"
+      },
+      {
+        "id": "defaulted_24_59m",
+        "label": "defaulted_24_59m"
+      },
+      {
+        "id": "defaulted_25p",
+        "label": "defaulted_25p"
+      },
+      {
+        "id": "defaulted_5_9",
+        "label": "defaulted_5_9"
+      },
+      {
+        "id": "defaulted_6_23m",
+        "label": "defaulted_6_23m"
+      },
+      {
+        "id": "died_0_5m",
+        "label": "died_0_5m"
+      },
+      {
+        "id": "died_10_19",
+        "label": "died_10_19"
+      },
+      {
+        "id": "died_20_24",
+        "label": "died_20_24"
+      },
+      {
+        "id": "died_24_59m",
+        "label": "died_24_59m"
+      },
+      {
+        "id": "died_25p",
+        "label": "died_25p"
+      },
+      {
+        "id": "died_5_9",
+        "label": "died_5_9"
+      },
+      {
+        "id": "died_6_23m",
+        "label": "died_6_23m"
+      },
+      {
+        "id": "discharged_cured_0_5m",
+        "label": "discharged_cured_0_5m"
+      },
+      {
+        "id": "discharged_cured_10_19",
+        "label": "discharged_cured_10_19"
+      },
+      {
+        "id": "discharged_cured_20_24",
+        "label": "discharged_cured_20_24"
+      },
+      {
+        "id": "discharged_cured_24_59m",
+        "label": "discharged_cured_24_59m"
+      },
+      {
+        "id": "discharged_cured_25p",
+        "label": "discharged_cured_25p"
+      },
+      {
+        "id": "discharged_cured_5_9",
+        "label": "discharged_cured_5_9"
+      },
+      {
+        "id": "discharged_cured_6_23m",
+        "label": "discharged_cured_6_23m"
+      },
+      {
+        "id": "non_response_0_5m",
+        "label": "non_response_0_5m"
+      },
+      {
+        "id": "non_response_10_19",
+        "label": "non_response_10_19"
+      },
+      {
+        "id": "non_response_20_24",
+        "label": "non_response_20_24"
+      },
+      {
+        "id": "non_response_24_59m",
+        "label": "non_response_24_59m"
+      },
+      {
+        "id": "non_response_25p",
+        "label": "non_response_25p"
+      },
+      {
+        "id": "non_response_5_9",
+        "label": "non_response_5_9"
+      },
+      {
+        "id": "non_response_6_23m",
+        "label": "non_response_6_23m"
+      },
+      {
+        "id": "transferred_out_0_5m",
+        "label": "transferred_out_0_5m"
+      },
+      {
+        "id": "transferred_out_10_19",
+        "label": "transferred_out_10_19"
+      },
+      {
+        "id": "transferred_out_20_24",
+        "label": "transferred_out_20_24"
+      },
+      {
+        "id": "transferred_out_24_59m",
+        "label": "transferred_out_24_59m"
+      },
+      {
+        "id": "transferred_out_25p",
+        "label": "transferred_out_25p"
+      },
+      {
+        "id": "transferred_out_5_9",
+        "label": "transferred_out_5_9"
+      },
+      {
+        "id": "transferred_out_6_23m",
+        "label": "transferred_out_6_23m"
+      }
+    ],
+    "age_na04": [
+      {
+        "id": "total_days_otc_0_5m",
+        "label": "total_days_otc_0_5m"
+      },
+      {
+        "id": "total_days_otc_10_19",
+        "label": "total_days_otc_10_19"
+      },
+      {
+        "id": "total_days_otc_20_24",
+        "label": "total_days_otc_20_24"
+      },
+      {
+        "id": "total_days_otc_24_59m",
+        "label": "total_days_otc_24_59m"
+      },
+      {
+        "id": "total_days_otc_25p",
+        "label": "total_days_otc_25p"
+      },
+      {
+        "id": "total_days_otc_5_9",
+        "label": "total_days_otc_5_9"
+      },
+      {
+        "id": "total_days_otc_6_23m",
+        "label": "total_days_otc_6_23m"
+      }
+    ],
+    "age_na05": [
+      {
+        "id": "active_prev_0_5m",
+        "label": "active_prev_0_5m"
+      },
+      {
+        "id": "active_prev_10_19",
+        "label": "active_prev_10_19"
+      },
+      {
+        "id": "active_prev_20_24",
+        "label": "active_prev_20_24"
+      },
+      {
+        "id": "active_prev_24_59m",
+        "label": "active_prev_24_59m"
+      },
+      {
+        "id": "active_prev_25p",
+        "label": "active_prev_25p"
+      },
+      {
+        "id": "active_prev_5_9",
+        "label": "active_prev_5_9"
+      },
+      {
+        "id": "active_prev_6_23m",
+        "label": "active_prev_6_23m"
+      },
+      {
+        "id": "new_admissions_0_5m",
+        "label": "new_admissions_0_5m"
+      },
+      {
+        "id": "new_admissions_10_19",
+        "label": "new_admissions_10_19"
+      },
+      {
+        "id": "new_admissions_20_24",
+        "label": "new_admissions_20_24"
+      },
+      {
+        "id": "new_admissions_24_59m",
+        "label": "new_admissions_24_59m"
+      },
+      {
+        "id": "new_admissions_25p",
+        "label": "new_admissions_25p"
+      },
+      {
+        "id": "new_admissions_5_9",
+        "label": "new_admissions_5_9"
+      },
+      {
+        "id": "new_admissions_6_23m",
+        "label": "new_admissions_6_23m"
+      },
+      {
+        "id": "readm_defaulters_0_5m",
+        "label": "readm_defaulters_0_5m"
+      },
+      {
+        "id": "readm_defaulters_10_19",
+        "label": "readm_defaulters_10_19"
+      },
+      {
+        "id": "readm_defaulters_20_24",
+        "label": "readm_defaulters_20_24"
+      },
+      {
+        "id": "readm_defaulters_24_59m",
+        "label": "readm_defaulters_24_59m"
+      },
+      {
+        "id": "readm_defaulters_25p",
+        "label": "readm_defaulters_25p"
+      },
+      {
+        "id": "readm_defaulters_5_9",
+        "label": "readm_defaulters_5_9"
+      },
+      {
+        "id": "readm_defaulters_6_23m",
+        "label": "readm_defaulters_6_23m"
+      },
+      {
+        "id": "readm_relapse_0_5m",
+        "label": "readm_relapse_0_5m"
+      },
+      {
+        "id": "readm_relapse_10_19",
+        "label": "readm_relapse_10_19"
+      },
+      {
+        "id": "readm_relapse_20_24",
+        "label": "readm_relapse_20_24"
+      },
+      {
+        "id": "readm_relapse_24_59m",
+        "label": "readm_relapse_24_59m"
+      },
+      {
+        "id": "readm_relapse_25p",
+        "label": "readm_relapse_25p"
+      },
+      {
+        "id": "readm_relapse_5_9",
+        "label": "readm_relapse_5_9"
+      },
+      {
+        "id": "readm_relapse_6_23m",
+        "label": "readm_relapse_6_23m"
+      },
+      {
+        "id": "transfer_in_0_5m",
+        "label": "transfer_in_0_5m"
+      },
+      {
+        "id": "transfer_in_10_19",
+        "label": "transfer_in_10_19"
+      },
+      {
+        "id": "transfer_in_20_24",
+        "label": "transfer_in_20_24"
+      },
+      {
+        "id": "transfer_in_24_59m",
+        "label": "transfer_in_24_59m"
+      },
+      {
+        "id": "transfer_in_25p",
+        "label": "transfer_in_25p"
+      },
+      {
+        "id": "transfer_in_5_9",
+        "label": "transfer_in_5_9"
+      },
+      {
+        "id": "transfer_in_6_23m",
+        "label": "transfer_in_6_23m"
+      }
+    ],
+    "age_na06": [
+      {
+        "id": "defaulted_0_5m",
+        "label": "defaulted_0_5m"
+      },
+      {
+        "id": "defaulted_10_19",
+        "label": "defaulted_10_19"
+      },
+      {
+        "id": "defaulted_20_24",
+        "label": "defaulted_20_24"
+      },
+      {
+        "id": "defaulted_24_59m",
+        "label": "defaulted_24_59m"
+      },
+      {
+        "id": "defaulted_25p",
+        "label": "defaulted_25p"
+      },
+      {
+        "id": "defaulted_5_9",
+        "label": "defaulted_5_9"
+      },
+      {
+        "id": "defaulted_6_23m",
+        "label": "defaulted_6_23m"
+      },
+      {
+        "id": "died_0_5m",
+        "label": "died_0_5m"
+      },
+      {
+        "id": "died_10_19",
+        "label": "died_10_19"
+      },
+      {
+        "id": "died_20_24",
+        "label": "died_20_24"
+      },
+      {
+        "id": "died_24_59m",
+        "label": "died_24_59m"
+      },
+      {
+        "id": "died_25p",
+        "label": "died_25p"
+      },
+      {
+        "id": "died_5_9",
+        "label": "died_5_9"
+      },
+      {
+        "id": "died_6_23m",
+        "label": "died_6_23m"
+      },
+      {
+        "id": "discharged_cured_0_5m",
+        "label": "discharged_cured_0_5m"
+      },
+      {
+        "id": "discharged_cured_10_19",
+        "label": "discharged_cured_10_19"
+      },
+      {
+        "id": "discharged_cured_20_24",
+        "label": "discharged_cured_20_24"
+      },
+      {
+        "id": "discharged_cured_24_59m",
+        "label": "discharged_cured_24_59m"
+      },
+      {
+        "id": "discharged_cured_25p",
+        "label": "discharged_cured_25p"
+      },
+      {
+        "id": "discharged_cured_5_9",
+        "label": "discharged_cured_5_9"
+      },
+      {
+        "id": "discharged_cured_6_23m",
+        "label": "discharged_cured_6_23m"
+      },
+      {
+        "id": "non_response_0_5m",
+        "label": "non_response_0_5m"
+      },
+      {
+        "id": "non_response_10_19",
+        "label": "non_response_10_19"
+      },
+      {
+        "id": "non_response_20_24",
+        "label": "non_response_20_24"
+      },
+      {
+        "id": "non_response_24_59m",
+        "label": "non_response_24_59m"
+      },
+      {
+        "id": "non_response_25p",
+        "label": "non_response_25p"
+      },
+      {
+        "id": "non_response_5_9",
+        "label": "non_response_5_9"
+      },
+      {
+        "id": "non_response_6_23m",
+        "label": "non_response_6_23m"
+      },
+      {
+        "id": "transferred_out_0_5m",
+        "label": "transferred_out_0_5m"
+      },
+      {
+        "id": "transferred_out_10_19",
+        "label": "transferred_out_10_19"
+      },
+      {
+        "id": "transferred_out_20_24",
+        "label": "transferred_out_20_24"
+      },
+      {
+        "id": "transferred_out_24_59m",
+        "label": "transferred_out_24_59m"
+      },
+      {
+        "id": "transferred_out_25p",
+        "label": "transferred_out_25p"
+      },
+      {
+        "id": "transferred_out_5_9",
+        "label": "transferred_out_5_9"
+      },
+      {
+        "id": "transferred_out_6_23m",
+        "label": "transferred_out_6_23m"
+      }
+    ],
+    "age_na07": [
+      {
+        "id": "total_days_sfc_0_5m",
+        "label": "total_days_sfc_0_5m"
+      },
+      {
+        "id": "total_days_sfc_10_19",
+        "label": "total_days_sfc_10_19"
+      },
+      {
+        "id": "total_days_sfc_20_24",
+        "label": "total_days_sfc_20_24"
+      },
+      {
+        "id": "total_days_sfc_24_59m",
+        "label": "total_days_sfc_24_59m"
+      },
+      {
+        "id": "total_days_sfc_25p",
+        "label": "total_days_sfc_25p"
+      },
+      {
+        "id": "total_days_sfc_5_9",
+        "label": "total_days_sfc_5_9"
+      },
+      {
+        "id": "total_days_sfc_6_23m",
+        "label": "total_days_sfc_6_23m"
+      }
+    ]
+  },
+  "mapping": {
+    "arrayName": "dataValues",
+    "defaultValue": 0,
+    "groups": [
+      {
+        "title": "1.1 Outpatient Attendance",
+        "indicatorCodes": [
+          "OA01",
+          "OA02"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.2 Outpatient Referrals",
+        "indicatorCodes": [
+          "OR01",
+          "OR02"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.1 Epidemic-Prone Diseases",
+        "indicatorCodes": [
+          "EP01",
+          "EP01a",
+          "EP01b",
+          "EP01c",
+          "EP01d",
+          "EP02",
+          "EP03",
+          "EP04",
+          "EP05",
+          "EP06",
+          "EP07",
+          "EP08",
+          "EP09",
+          "EP10",
+          "EP11",
+          "EP12",
+          "EP13",
+          "EP14",
+          "EP15",
+          "EP16",
+          "EP17",
+          "EP18"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.2 Other Infectious/Communicable Diseases",
+        "indicatorCodes": [
+          "CD01",
+          "CD02",
+          "CD03",
+          "CD04",
+          "CD06",
+          "CD07",
+          "CD08",
+          "CD11",
+          "CD12",
+          "CD13",
+          "CD14",
+          "CD15",
+          "CD16",
+          "CD17",
+          "CD18",
+          "CD19"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.3 Neonatal Diseases",
+        "indicatorCodes": [
+          "ND01",
+          "ND02",
+          "ND03",
+          "ND04",
+          "ND05",
+          "ND06",
+          "ND07"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.4 Non Communicable Diseases/Conditions",
+        "indicatorCodes": [
+          "NC01",
+          "NC02",
+          "NC03",
+          "NC04",
+          "NC05",
+          "NC06"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.5 Oral Diseases",
+        "indicatorCodes": [
+          "OD01",
+          "OD02",
+          "OD03",
+          "OD04",
+          "OD05"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.6 ENT Conditions",
+        "indicatorCodes": [
+          "EN01",
+          "EN02",
+          "EN03",
+          "EN04",
+          "EN05",
+          "EN06",
+          "EN07",
+          "EN08",
+          "EN09",
+          "EN10",
+          "EN11",
+          "EN12",
+          "EN13",
+          "EN14",
+          "EN15",
+          "EN16",
+          "EN17"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.7 Eye Conditions",
+        "indicatorCodes": [
+          "EC01",
+          "EC02",
+          "EC03",
+          "EC04",
+          "EC05",
+          "EC06",
+          "EC07",
+          "EC08",
+          "EC09",
+          "EC10",
+          "EC12",
+          "EC13",
+          "EC16",
+          "EC17",
+          "EC24",
+          "EC25"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.8 Mental Health",
+        "indicatorCodes": [
+          "MH05",
+          "MH07",
+          "MH08",
+          "MH09",
+          "MH10",
+          "MH11",
+          "MH12",
+          "MH13",
+          "MH26",
+          "MH33",
+          "MH33a",
+          "MH33b",
+          "MH45",
+          "MH46"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.9 Neurological Disorders",
+        "indicatorCodes": [
+          "NE03",
+          "NE04",
+          "NE07",
+          "NE08",
+          "NE09",
+          "NE11",
+          "NE12",
+          "NE15"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.10 Chronic Respiratory Diseases",
+        "indicatorCodes": [
+          "CR01",
+          "CR01a",
+          "CR01b",
+          "CR02",
+          "CR02a",
+          "CR02b",
+          "CR03"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.11 Cancers",
+        "indicatorCodes": [
+          "CA01",
+          "CA02",
+          "CA03",
+          "CA04",
+          "CA05",
+          "CA07",
+          "CA08",
+          "CA19"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.14 Disabilities",
+        "indicatorCodes": [
+          "DS01",
+          "DS02",
+          "DS03",
+          "DS04",
+          "DS05",
+          "DS06",
+          "DS07",
+          "DS08",
+          "DS09",
+          "DS10",
+          "DS11",
+          "DS12",
+          "DS13"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.15 Cardiovascular Diseases",
+        "indicatorCodes": [
+          "CV01",
+          "CV02",
+          "CV02a",
+          "CV02b",
+          "CV03",
+          "CV04",
+          "CV05",
+          "CV06",
+          "CV07"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.16 Renal Diseases",
+        "indicatorCodes": [
+          "RD01",
+          "RD02",
+          "RD03",
+          "RD08",
+          "RD09"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.17 Liver Diseases",
+        "indicatorCodes": [
+          "LD01",
+          "LD02",
+          "LD06",
+          "LD07",
+          "LD08",
+          "LD09",
+          "LD10"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.18 Endocrine and Metabolic Disorders",
+        "indicatorCodes": [
+          "EM01",
+          "EM01a",
+          "EM01b",
+          "EM01c",
+          "EM01d",
+          "EM01e",
+          "EM01f",
+          "EM02",
+          "EM03"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.19 Injuries",
+        "indicatorCodes": [
+          "IN01",
+          "IN02",
+          "IN03",
+          "IN04",
+          "IN04a",
+          "IN04b",
+          "IN05",
+          "IN06"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.20 Minor Operations in OPD",
+        "indicatorCodes": [
+          "MN01",
+          "MN02",
+          "MN03"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.21 Neglected Tropical Diseases",
+        "indicatorCodes": [
+          "NT01",
+          "NT02",
+          "NT03",
+          "NT04",
+          "NT05",
+          "NT06"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.22 Maternal Conditions",
+        "indicatorCodes": [
+          "MC01",
+          "MC02",
+          "MC03",
+          "MC04",
+          "MC05",
+          "MC06",
+          "MC07",
+          "MC08",
+          "MC09",
+          "MC10",
+          "MC11"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.23 Other OPD Conditions",
+        "indicatorCodes": [
+          "OP01"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.24 Deaths in OPD",
+        "indicatorCodes": [
+          "DT01"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.12 Palliative Care",
+        "indicatorCodes": [
+          "PC01",
+          "PC01a",
+          "PC01b",
+          "PC01c",
+          "PC01d",
+          "PC02",
+          "PC02a",
+          "PC02b",
+          "PC02c",
+          "PC02d",
+          "PC03",
+          "PC03a",
+          "PC03b",
+          "PC03c",
+          "PC03d",
+          "PC04",
+          "PC04a",
+          "PC04b",
+          "PC04c",
+          "PC04d",
+          "PC05",
+          "PC06"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.25 Emergency Medical Services",
+        "indicatorCodes": [
+          "ES01",
+          "ES02",
+          "ES03",
+          "ES04",
+          "ES05",
+          "ES06",
+          "ES07",
+          "ES08",
+          "ES09",
+          "ES10"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "TB / Leprosy / Screening",
+        "indicatorCodes": [
+          "TP01a",
+          "TP01b",
+          "TP01c",
+          "TP02a",
+          "TP02b",
+          "TP02c",
+          "TP03a",
+          "TP03b",
+          "TP03c",
+          "TP04"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.29 Gender Based Violence Services",
+        "indicatorCodes": [
+          "GBV01",
+          "GBV02",
+          "GBV03",
+          "GBV04",
+          "GBV05"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_opd",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.26 Nutrition Services - NA01a",
+        "indicatorCodes": [
+          "NA01a"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_na01a",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.26 Nutrition Services - NA01b",
+        "indicatorCodes": [
+          "NA01b"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_na01b",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.26 Nutrition Services - NA02",
+        "indicatorCodes": [
+          "NA02"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_na02",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.26 Nutrition Services - NA03",
+        "indicatorCodes": [
+          "NA03"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_na03",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.26 Nutrition Services - NA04",
+        "indicatorCodes": [
+          "NA04"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_na04",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.26 Nutrition Services - NA05",
+        "indicatorCodes": [
+          "NA05"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_na05",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.26 Nutrition Services - NA06",
+        "indicatorCodes": [
+          "NA06"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_na06",
+          "sex": "sex"
+        }
+      },
+      {
+        "title": "1.3.26 Nutrition Services - NA07",
+        "indicatorCodes": [
+          "NA07"
+        ],
+        "keyPattern": "{code}_{age}_{sex}",
+        "dims": {
+          "age": "age_na07",
+          "sex": "sex"
+        }
+      }
+    ]
+  }
+}

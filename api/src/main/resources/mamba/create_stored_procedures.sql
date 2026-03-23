@@ -14528,7 +14528,9 @@ CREATE PROCEDURE sp_mamba_data_processing_etl(IN etl_incremental_mode INT)
 
 BEGIN
     -- add base folder SP here if any --
-
+    CALL sp_mamba_system_drop_fact_tables();
+    CALL sp_data_processing_derived_opd_attendance();
+    CALL sp_fact_encounter_diagnosis();
     CALL sp_data_processing_derived_transfers();
     CALL sp_data_processing_derived_non_suppressed();
     CALL sp_data_processing_derived_hiv_art_card();
@@ -15097,6 +15099,72 @@ CREATE TABLE mamba_dim_agegroup
     PRIMARY KEY (id)
 )
     CHARSET = UTF8MB4;
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_dim_age_group_create  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_mamba_dim_age_group_create;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_mamba_dim_age_group_create()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_mamba_dim_age_group_create', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_mamba_dim_age_group_create', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CREATE TABLE IF NOT EXISTS mamba_dim_age_category (
+                                        age_category_id   INT AUTO_INCREMENT PRIMARY KEY,
+                                        code              VARCHAR(50)  NOT NULL UNIQUE,
+                                        name              VARCHAR(100) NOT NULL,
+                                        description       TEXT,
+                                        version           VARCHAR(20)  DEFAULT 'v1',
+                                        effective_from    DATE NULL,
+                                        effective_to      DATE NULL,
+                                        is_active         TINYINT(1)   NOT NULL DEFAULT 1,
+                                        created_at        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+) CHARSET = UTF8MB4;
+
+CREATE TABLE IF NOT EXISTS mamba_dim_age_group (
+                                     age_group_id     INT AUTO_INCREMENT PRIMARY KEY,
+                                     age_category_id  INT NOT NULL,
+                                     code             VARCHAR(50),
+                                     label            VARCHAR(100) NOT NULL,
+                                     min_age_days     INT NOT NULL,
+                                     max_age_days     INT NOT NULL,
+                                     sort_order       INT NOT NULL,
+                                     is_active        TINYINT(1)   NOT NULL DEFAULT 1,
+                                     created_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                                     CONSTRAINT fk_mamba_age_category
+                                         FOREIGN KEY (age_category_id)
+                                             REFERENCES mamba_dim_age_category (age_category_id)
+) CHARSET = UTF8MB4;
+
 -- $END
 END //
 
@@ -25037,271 +25105,6 @@ DELIMITER ;
 
         
 -- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_test_orders_results  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_fact_test_orders_results;
-
-DELIMITER //
-
-CREATE PROCEDURE sp_fact_test_orders_results()
-BEGIN
-
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-BEGIN
-    GET DIAGNOSTICS CONDITION 1
-
-    @message_text = MESSAGE_TEXT,
-    @mysql_errno = MYSQL_ERRNO,
-    @returned_sqlstate = RETURNED_SQLSTATE;
-
-    CALL sp_mamba_etl_error_log_insert('sp_fact_test_orders_results', @message_text, @mysql_errno, @returned_sqlstate);
-
-    UPDATE _mamba_etl_schedule
-    SET end_time                   = NOW(),
-        completion_status          = 'ERROR',
-        transaction_status         = 'COMPLETED',
-        success_or_error_message   = CONCAT('sp_fact_test_orders_results', ', ', @mysql_errno, ', ', @message_text)
-        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
-
-    RESIGNAL;
-END;
-
--- $BEGIN
-CALL sp_fact_test_orders_results_create();
-CALL sp_fact_test_orders_results_insert();
-CALL sp_fact_test_orders_results_update();
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_test_orders_results_create  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_fact_test_orders_results_create;
-
-DELIMITER //
-
-CREATE PROCEDURE sp_fact_test_orders_results_create()
-BEGIN
-
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-BEGIN
-    GET DIAGNOSTICS CONDITION 1
-
-    @message_text = MESSAGE_TEXT,
-    @mysql_errno = MYSQL_ERRNO,
-    @returned_sqlstate = RETURNED_SQLSTATE;
-
-    CALL sp_mamba_etl_error_log_insert('sp_fact_test_orders_results_create', @message_text, @mysql_errno, @returned_sqlstate);
-
-    UPDATE _mamba_etl_schedule
-    SET end_time                   = NOW(),
-        completion_status          = 'ERROR',
-        transaction_status         = 'COMPLETED',
-        success_or_error_message   = CONCAT('sp_fact_test_orders_results_create', ', ', @mysql_errno, ', ', @message_text)
-        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
-
-    RESIGNAL;
-END;
-
--- $BEGIN
-CREATE TABLE mamba_fact_test_orders_results
-(
-    id        INT AUTO_INCREMENT,
-    test_orders_id INT NOT NULL,
-    encounter_id INT NULL,
-    encounter_datetime DATE NULL,
-    client_id INT NULL,
-    test_concept_id  INT NOT NULL,
-    test_parameter        VARCHAR(255) NULL,
-    test_value        TEXT NULL,
-
-        PRIMARY KEY (id)
-) CHARSET = UTF8;
-
-CREATE INDEX
-    mamba_fact_test_orders_client_id_index ON mamba_fact_test_orders_results (client_id);
-CREATE INDEX
-    mamba_fact_test_orders_order_id_index ON mamba_fact_test_orders_results (id);
-
-CREATE INDEX
-    mamba_fact_test_orders_test_order_results_id_index ON mamba_fact_test_orders_results (test_orders_id);
-
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_test_orders_results_insert  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_fact_test_orders_results_insert;
-
-DELIMITER //
-
-CREATE PROCEDURE sp_fact_test_orders_results_insert()
-BEGIN
-
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-BEGIN
-    GET DIAGNOSTICS CONDITION 1
-
-    @message_text = MESSAGE_TEXT,
-    @mysql_errno = MYSQL_ERRNO,
-    @returned_sqlstate = RETURNED_SQLSTATE;
-
-    CALL sp_mamba_etl_error_log_insert('sp_fact_test_orders_results_insert', @message_text, @mysql_errno, @returned_sqlstate);
-
-    UPDATE _mamba_etl_schedule
-    SET end_time                   = NOW(),
-        completion_status          = 'ERROR',
-        transaction_status         = 'COMPLETED',
-        success_or_error_message   = CONCAT('sp_fact_test_orders_results_insert', ', ', @mysql_errno, ', ', @message_text)
-        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
-
-    RESIGNAL;
-END;
-
--- $BEGIN
-INSERT INTO mamba_fact_test_orders_results(test_orders_id,
-                                          encounter_id,
-                                          encounter_datetime,
-                                          client_id,
-                                          test_concept_id,
-                                          test_parameter,
-                                          test_value)
-SELECT labtests.id                                                                         AS test_orders_id,
-       labtests.encounter_id,
-       encounter_datetime,
-       client_id,
-       labtests.concept_id                                                                 AS test_concept_id,
-       cn.name                                                                             AS test_parameter,
-       IF(cd.name = 'Numeric', value_numeric,
-          IF(cd.name = 'Date', DATE(value_datetime), IF(cd.name = 'Coded', cn1.name, ''))) AS value
-FROM (SELECT mfto.id,
-             mfto.encounter_id,
-             mfto.client_id,
-             o.obs_id,
-             DATE(obs_datetime) as encounter_datetime,
-             o.concept_id
-      FROM mamba_fact_test_orders mfto
-               LEFT JOIN obs o
-                         ON mfto.test_concept_id = o.concept_id AND mfto.encounter_id = o.encounter_id
-               INNER JOIN concept c ON o.concept_id = c.concept_id
-               INNER JOIN concept_class cc ON c.class_id = cc.concept_class_id
-      WHERE cc.name = 'LabSet'
-        AND c.is_set = 1
-        AND o.voided = 0) labtests
-         LEFT JOIN obs o ON o.obs_group_id = labtests.obs_id
-         LEFT JOIN concept_name cn ON o.concept_id = cn.concept_id
-         INNER JOIN concept c ON o.concept_id = c.concept_id
-         INNER JOIN concept_datatype cd ON c.datatype_id = cd.concept_datatype_id
-         left join concept_name cn1 on o.value_coded = cn1.concept_id AND
-                                       IF(cn1.locale_preferred = 1, cn1.locale_preferred = 1,
-                                          cn1.concept_name_type = 'FULLY_SPECIFIED')
-WHERE IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED');
-
-
-INSERT INTO mamba_fact_test_orders_results(test_orders_id,
-                                          encounter_id,
-                                          client_id,
-                                          test_concept_id,
-                                          test_parameter,
-                                          test_value)
-SELECT id                                                                                                    AS test_orders_id,
-       encounter_id,
-       client_id,
-       concept_id                                                                                            AS test_concept_id,
-       test_parameter,
-       IF(datatype = 'Numeric', value_numeric,
-          IF(datatype = 'Date', DATE(value_datetime), IF(datatype = 'Coded', coded_value_text, value_text))) AS value
-FROM (SELECT mfto.id,
-             mfto.encounter_id,
-             mfto.client_id,
-             o.concept_id,
-             cn.name  AS test_parameter,
-             cd.name  AS datatype,
-             cn1.name AS coded_value_text,
-             value_numeric,
-             value_datetime,
-             value_text
-
-      FROM mamba_fact_test_orders mfto
-               LEFT JOIN obs o
-                         ON mfto.test_concept_id = o.concept_id AND mfto.encounter_id = o.encounter_id
-               INNER JOIN concept c ON o.concept_id = c.concept_id
-               LEFT JOIN concept_name cn ON c.concept_id = cn.concept_id
-               INNER JOIN concept_datatype cd ON c.datatype_id = cd.concept_datatype_id
-               INNER JOIN concept_class cc ON c.class_id = cc.concept_class_id
-               LEFT JOIN concept_name cn1 ON o.value_coded = cn1.concept_id AND
-                                             IF(cn1.locale_preferred = 1, cn1.locale_preferred = 1,
-                                                cn1.concept_name_type = 'FULLY_SPECIFIED')
-      WHERE cc.name <> 'LabSet'
-        AND o.voided = 0
-        AND IF(cn.locale_preferred = 1, cn.locale_preferred = 1, cn.concept_name_type = 'FULLY_SPECIFIED')) labtests;
-
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_test_orders_results_query  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-
-
-
-        
--- ---------------------------------------------------------------------------------------------
--- ----------------------  sp_fact_test_orders_results_update  ----------------------------
--- ---------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS sp_fact_test_orders_results_update;
-
-DELIMITER //
-
-CREATE PROCEDURE sp_fact_test_orders_results_update()
-BEGIN
-
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-BEGIN
-    GET DIAGNOSTICS CONDITION 1
-
-    @message_text = MESSAGE_TEXT,
-    @mysql_errno = MYSQL_ERRNO,
-    @returned_sqlstate = RETURNED_SQLSTATE;
-
-    CALL sp_mamba_etl_error_log_insert('sp_fact_test_orders_results_update', @message_text, @mysql_errno, @returned_sqlstate);
-
-    UPDATE _mamba_etl_schedule
-    SET end_time                   = NOW(),
-        completion_status          = 'ERROR',
-        transaction_status         = 'COMPLETED',
-        success_or_error_message   = CONCAT('sp_fact_test_orders_results_update', ', ', @mysql_errno, ', ', @message_text)
-        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
-
-    RESIGNAL;
-END;
-
--- $BEGIN
-
--- $END
-END //
-
-DELIMITER ;
-
-        
--- ---------------------------------------------------------------------------------------------
 -- ----------------------  sp_data_processing_derived_hiv_art_card  ----------------------------
 -- ---------------------------------------------------------------------------------------------
 
@@ -26095,6 +25898,278 @@ BEGIN
             SET age = age + 1;
         END WHILE;
 END //
+
+DELIMITER ;
+
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_mamba_seed_age_group  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_mamba_seed_age_group;
+DELIMITER //
+
+CREATE PROCEDURE sp_mamba_seed_age_group()
+BEGIN
+    DECLARE v_cat_id INT;
+
+    /* ------------------------------------------------------------------
+       1) Seed Age Categories
+       ------------------------------------------------------------------ */
+    INSERT INTO mamba_dim_age_category
+    (code, name, description, version, effective_from, is_active)
+    SELECT * FROM (
+                      SELECT 'MOH_105_OPD_DIAG',
+                             'MOH 105 OPD Diagnoses Age Groups',
+                             'Age/Gender disaggregation for OPD diagnoses in MOH 105 (Section 1A)',
+                             'v1', CURDATE(), 1
+                      UNION ALL
+                      SELECT 'MOH_105_NUTRITION',
+                             'MOH 105 Nutrition Age Groups',
+                             'Nutrition services age/gender disaggregation in MOH 105',
+                             'v1', CURDATE(), 1
+                      UNION ALL
+                      SELECT 'MOH_MCH',
+                             'MOH ANC/Maternity/PNC/FP Age Groups',
+                             'MCH age disaggregation used in ANC, maternity, postnatal and FP sections',
+                             'v1', CURDATE(), 1
+                      UNION ALL
+                      SELECT 'GBV',
+                             'GBV Services Age Groups',
+                             'GBV services age/gender disaggregation',
+                             'v1', CURDATE(), 1
+                      UNION ALL
+                      SELECT 'HTS',
+                             'HIV Testing Services Age Groups',
+                             'HTS age/gender disaggregation',
+                             'v1', CURDATE(), 1
+                      UNION ALL
+                      SELECT 'SMC',
+                             'Safe Male Circumcision Age Groups',
+                             'SMC age/gender disaggregation',
+                             'v1', CURDATE(), 1
+                      UNION ALL
+                      SELECT 'HEPATITIS',
+                             'Hepatitis Services Age Groups',
+                             'Hepatitis age/gender disaggregation',
+                             'v1', CURDATE(), 1
+                  ) src(code, name, description, version, effective_from, is_active)
+    WHERE NOT EXISTS (
+        SELECT 1 FROM mamba_dim_age_category c WHERE c.code = src.code
+    );
+
+    /* ------------------------------------------------------------------
+       2) MOH 105 OPD Diagnoses (ALIGN LABELS TO REPORT DESIGN TOKENS)
+          Expected: 0-28d, 29d-4y, 5-9, 10-19, 20+
+       ------------------------------------------------------------------ */
+    SELECT age_category_id INTO v_cat_id
+    FROM mamba_dim_age_category
+    WHERE code = 'MOH_105_OPD_DIAG'
+    LIMIT 1;
+
+    IF v_cat_id IS NOT NULL THEN
+        INSERT INTO mamba_dim_age_group
+        (age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        SELECT * FROM (
+                          SELECT v_cat_id,'D0_28','0-28d',0,28,1,1
+                          UNION ALL SELECT v_cat_id,'D29_4Y','29d-4y',29,1824,2,1
+                          UNION ALL SELECT v_cat_id,'Y5_9','5-9',1825,3649,3,1
+                          /* 10–19 => 3650 .. 7299 (i.e. (20*365)-1) */
+                          UNION ALL SELECT v_cat_id,'Y10_19','10-19',3650,7299,4,1
+                          /* 20+ => 7300 .. 30000 */
+                          UNION ALL SELECT v_cat_id,'Y20P','20+',7300,30000,5,1
+                      ) g(age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM mamba_dim_age_group e
+            WHERE e.age_category_id = g.age_category_id AND e.code = g.code
+        );
+
+        /* If groups already exist, ensure they are updated to the new standard */
+        UPDATE mamba_dim_age_group ag
+        SET
+            ag.label = CASE ag.code
+                           WHEN 'D0_28'  THEN '0-28d'
+                           WHEN 'D29_4Y' THEN '29d-4y'
+                           WHEN 'Y5_9'   THEN '5-9'
+                           WHEN 'Y10_19' THEN '10-19'
+                           WHEN 'Y20P'   THEN '20+'
+                           ELSE ag.label
+                END,
+            ag.min_age_days = CASE ag.code
+                                  WHEN 'Y10_19' THEN 3650
+                                  WHEN 'Y20P'   THEN 7300
+                                  ELSE ag.min_age_days
+                END,
+            ag.max_age_days = CASE ag.code
+                                  WHEN 'Y10_19' THEN 7299
+                                  ELSE ag.max_age_days
+                END,
+            ag.sort_order = CASE ag.code
+                                WHEN 'D0_28'  THEN 1
+                                WHEN 'D29_4Y' THEN 2
+                                WHEN 'Y5_9'   THEN 3
+                                WHEN 'Y10_19' THEN 4
+                                WHEN 'Y20P'   THEN 5
+                                ELSE ag.sort_order
+                END,
+            ag.is_active = 1
+        WHERE ag.age_category_id = v_cat_id;
+    END IF;
+
+    /* ------------------------------------------------------------------
+       3) MOH 105 Nutrition
+       ------------------------------------------------------------------ */
+    SELECT age_category_id INTO v_cat_id
+    FROM mamba_dim_age_category
+    WHERE code='MOH_105_NUTRITION' LIMIT 1;
+
+    IF v_cat_id IS NOT NULL THEN
+        INSERT INTO mamba_dim_age_group
+        (age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        SELECT * FROM (
+                          SELECT v_cat_id,'M0_5','0–5 months',0, (6*30)-1, 1,1
+                          UNION ALL SELECT v_cat_id,'M6_23','6–23 months',(6*30), (24*30)-1, 2,1
+                          UNION ALL SELECT v_cat_id,'M24_59','24–59 months',(24*30), (60*30)-1, 3,1
+                          UNION ALL SELECT v_cat_id,'Y5_9','5–9 years', (5*365), (10*365)-1, 4,1
+                          UNION ALL SELECT v_cat_id,'Y10_19','10–19 years', (10*365), (20*365)-1, 5,1
+                          UNION ALL SELECT v_cat_id,'Y20_24','20–24 years', (20*365), (25*365)-1, 6,1
+                          UNION ALL SELECT v_cat_id,'Y25P','25+ years', (25*365), 30000, 7,1
+                      ) g(age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM mamba_dim_age_group e
+            WHERE e.age_category_id=g.age_category_id AND e.code=g.code
+        );
+    END IF;
+
+    /* ------------------------------------------------------------------
+       4) GBV
+       ------------------------------------------------------------------ */
+    SELECT age_category_id INTO v_cat_id
+    FROM mamba_dim_age_category
+    WHERE code='GBV' LIMIT 1;
+
+    IF v_cat_id IS NOT NULL THEN
+        INSERT INTO mamba_dim_age_group
+        (age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        SELECT * FROM (
+                          SELECT v_cat_id,'LT10','<10 yrs',0,(10*365)-1,1,1
+                          UNION ALL SELECT v_cat_id,'Y10_14','10–14 yrs',(10*365),(15*365)-1,2,1
+                          UNION ALL SELECT v_cat_id,'Y15_19','15–19 yrs',(15*365),(20*365)-1,3,1
+                          UNION ALL SELECT v_cat_id,'Y20_24','20–24 yrs',(20*365),(25*365)-1,4,1
+                          UNION ALL SELECT v_cat_id,'Y25_29','25–29 yrs',(25*365),(30*365)-1,5,1
+                          UNION ALL SELECT v_cat_id,'Y30_34','30–34 yrs',(30*365),(35*365)-1,6,1
+                          UNION ALL SELECT v_cat_id,'Y35_39','35–39 yrs',(35*365),(40*365)-1,7,1
+                          UNION ALL SELECT v_cat_id,'Y40_44','40–44 yrs',(40*365),(45*365)-1,8,1
+                          UNION ALL SELECT v_cat_id,'Y45_49','45–49 yrs',(45*365),(50*365)-1,9,1
+                          UNION ALL SELECT v_cat_id,'Y50P','50+ yrs',(50*365),30000,10,1
+                      ) g(age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM mamba_dim_age_group e
+            WHERE e.age_category_id=g.age_category_id AND e.code=g.code
+        );
+    END IF;
+
+    /* ------------------------------------------------------------------
+       5) MOH MCH
+       ------------------------------------------------------------------ */
+    SELECT age_category_id INTO v_cat_id
+    FROM mamba_dim_age_category
+    WHERE code='MOH_MCH' LIMIT 1;
+
+    IF v_cat_id IS NOT NULL THEN
+        INSERT INTO mamba_dim_age_group
+        (age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        SELECT * FROM (
+                          SELECT v_cat_id,'LT15','<15 yrs',0,(15*365)-1,1,1
+                          UNION ALL SELECT v_cat_id,'Y15_19','15–19 yrs',(15*365),(20*365)-1,2,1
+                          UNION ALL SELECT v_cat_id,'Y20_24','20–24 yrs',(20*365),(25*365)-1,3,1
+                          UNION ALL SELECT v_cat_id,'Y25_49','25–49 yrs',(25*365),(50*365)-1,4,1
+                          UNION ALL SELECT v_cat_id,'Y50P','50+ yrs',(50*365),30000,5,1
+                      ) g(age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM mamba_dim_age_group e
+            WHERE e.age_category_id=g.age_category_id AND e.code=g.code
+        );
+    END IF;
+
+    /* ------------------------------------------------------------------
+       6) Hepatitis
+       ------------------------------------------------------------------ */
+    SELECT age_category_id INTO v_cat_id
+    FROM mamba_dim_age_category
+    WHERE code='HEPATITIS' LIMIT 1;
+
+    IF v_cat_id IS NOT NULL THEN
+        INSERT INTO mamba_dim_age_group
+        (age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        SELECT * FROM (
+                          SELECT v_cat_id,'LT10','<10 yrs',0,(10*365)-1,1,1
+                          UNION ALL SELECT v_cat_id,'Y10_19','10–19 yrs',(10*365),(20*365)-1,2,1
+                          UNION ALL SELECT v_cat_id,'Y20_59','20–59 yrs',(20*365),(60*365)-1,3,1
+                          UNION ALL SELECT v_cat_id,'Y60P','60+ yrs',(60*365),30000,4,1
+                      ) g(age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM mamba_dim_age_group e
+            WHERE e.age_category_id=g.age_category_id AND e.code=g.code
+        );
+    END IF;
+
+    /* ------------------------------------------------------------------
+       7) HTS
+       ------------------------------------------------------------------ */
+    SELECT age_category_id INTO v_cat_id
+    FROM mamba_dim_age_category
+    WHERE code='HTS' LIMIT 1;
+
+    IF v_cat_id IS NOT NULL THEN
+        INSERT INTO mamba_dim_age_group
+        (age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        SELECT * FROM (
+                          SELECT v_cat_id,'Y0_4','0–4 yrs',0,(5*365)-1,1,1
+                          UNION ALL SELECT v_cat_id,'Y5_9','5–9 yrs',(5*365),(10*365)-1,2,1
+                          UNION ALL SELECT v_cat_id,'Y10_14','10–14 yrs',(10*365),(15*365)-1,3,1
+                          UNION ALL SELECT v_cat_id,'Y15_19','15–19 yrs',(15*365),(20*365)-1,4,1
+                          UNION ALL SELECT v_cat_id,'Y20_24','20–24 yrs',(20*365),(25*365)-1,5,1
+                          UNION ALL SELECT v_cat_id,'Y25_29','25–29 yrs',(25*365),(30*365)-1,6,1
+                          UNION ALL SELECT v_cat_id,'Y30_39','30–39 yrs',(30*365),(40*365)-1,7,1
+                          UNION ALL SELECT v_cat_id,'Y40_49','40–49 yrs',(40*365),(50*365)-1,8,1
+                          UNION ALL SELECT v_cat_id,'Y50P','50+ yrs',(50*365),30000,9,1
+                      ) g(age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM mamba_dim_age_group e
+            WHERE e.age_category_id=g.age_category_id AND e.code=g.code
+        );
+    END IF;
+
+    /* ------------------------------------------------------------------
+       8) SMC
+       ------------------------------------------------------------------ */
+    SELECT age_category_id INTO v_cat_id
+    FROM mamba_dim_age_category
+    WHERE code='SMC' LIMIT 1;
+
+    IF v_cat_id IS NOT NULL THEN
+        INSERT INTO mamba_dim_age_group
+        (age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        SELECT * FROM (
+                          SELECT v_cat_id,'Y0_4','0–4 yrs',0,(5*365)-1,1,1
+                          UNION ALL SELECT v_cat_id,'Y5_9','5–9 yrs',(5*365),(10*365)-1,2,1
+                          UNION ALL SELECT v_cat_id,'Y10_14','10–14 yrs',(10*365),(15*365)-1,3,1
+                          UNION ALL SELECT v_cat_id,'Y15_19','15–19 yrs',(15*365),(20*365)-1,4,1
+                          UNION ALL SELECT v_cat_id,'Y20_24','20–24 yrs',(20*365),(25*365)-1,5,1
+                          UNION ALL SELECT v_cat_id,'Y25_29','25–29 yrs',(25*365),(30*365)-1,6,1
+                          UNION ALL SELECT v_cat_id,'Y30_39','30–39 yrs',(30*365),(40*365)-1,7,1
+                          UNION ALL SELECT v_cat_id,'Y40_49','40–49 yrs',(40*365),(50*365)-1,8,1
+                          UNION ALL SELECT v_cat_id,'Y50P','50+ yrs',(50*365),30000,9,1
+                      ) g(age_category_id, code, label, min_age_days, max_age_days, sort_order, is_active)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM mamba_dim_age_group e
+            WHERE e.age_category_id=g.age_category_id AND e.code=g.code
+        );
+    END IF;
+
+END//
 
 DELIMITER ;
 
@@ -27241,6 +27316,439 @@ END;
 CALL sp_fact_encounter_non_suppressed_card;
 CALL sp_fact_encounter_non_suppressed_obs_group;
 CALL sp_fact_encounter_non_suppressed_repeat_vl;
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_attended_visit  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_attended_visit;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_fact_attended_visit()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_attended_visit', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_attended_visit', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CALL sp_fact_attended_visit_create();
+CALL sp_fact_attended_visit_insert();
+CALL sp_fact_attended_visit_update();
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_attended_visit_create  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_attended_visit_create;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_fact_attended_visit_create()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_attended_visit_create', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_attended_visit_create', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CREATE TABLE IF NOT EXISTS mamba_fact_attended_visit
+(
+    id INT AUTO_INCREMENT,
+    visit_id INT NOT NULL,
+    client_id INT NOT NULL,
+    visit_type_id INT NULL,
+    visit_start_datetime DATETIME NOT NULL,
+    visit_stop_datetime DATETIME NULL,
+    first_qualifying_encounter_datetime DATETIME NOT NULL,
+    last_qualifying_encounter_datetime DATETIME NOT NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_mf_attended_visit_visit_id (visit_id)
+);
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_attended_visit_insert  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_attended_visit_insert;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_fact_attended_visit_insert()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_attended_visit_insert', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_attended_visit_insert', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+INSERT INTO mamba_fact_attended_visit
+(
+  visit_id,
+  client_id,
+  visit_type_id,
+  visit_start_datetime,
+  visit_stop_datetime,
+  first_qualifying_encounter_datetime,
+  last_qualifying_encounter_datetime
+)
+SELECT
+  v.visit_id,
+  v.patient_id,
+  v.visit_type_id,
+  v.date_started,
+  v.date_stopped,
+  MIN(e.encounter_datetime),
+  MAX(e.encounter_datetime)
+FROM conceptreview.visit v
+JOIN conceptreview.encounter e ON e.visit_id = v.visit_id
+JOIN conceptreview.encounter_type et ON et.encounter_type_id = e.encounter_type
+WHERE v.voided = 0
+  AND e.voided = 0
+  AND et.uuid NOT IN (
+    '5021b1a1-e7f6-44b4-ba02-da2f2bcf8718',
+    '181820aa-88c9-479b-9077-af92f5364329',
+    'e22e39fd-7db2-45e7-80f1-60fa0d5a4378',
+    '7b68d557-85ef-4fc8-b767-4fa4f5eb5c23',
+    '044daI6d-f80e-48fe-aba9-037f241905Pe',
+    '9fcfcc91-ad60-4d84-9710-11cc25258719',
+    'a9f11592-22e7-45fc-904d-dfe24cb1fc67',
+    'fa6f3ff5-b784-43fb-ab35-a08ab7dbf074',
+    '1458b726-4a62-4444-be97-bb3e08c73745'
+  )
+GROUP BY
+  v.visit_id,
+  v.patient_id,
+  v.visit_type_id,
+  v.date_started,
+  v.date_stopped
+ON DUPLICATE KEY UPDATE
+  client_id = VALUES(client_id);
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_attended_visit_update  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_attended_visit_update;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_fact_attended_visit_update()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_attended_visit_update', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_attended_visit_update', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_reattendance_monthly  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_reattendance_monthly;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_fact_reattendance_monthly()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_reattendance_monthly', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_reattendance_monthly', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CALL sp_fact_reattendance_monthly_create();
+CALL sp_fact_reattendance_monthly_insert();
+CALL sp_fact_reattendance_monthly_update();
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_reattendance_monthly_create  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_reattendance_monthly_create;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_fact_reattendance_monthly_create()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_reattendance_monthly_create', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_reattendance_monthly_create', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CREATE TABLE IF NOT EXISTS mamba_fact_reattendance_monthly
+(
+    id INT AUTO_INCREMENT,
+    client_id INT NOT NULL,
+    report_month DATE NOT NULL,
+    attended_visit_count INT NOT NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_mf_reattendance_month (client_id, report_month)
+);
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_reattendance_monthly_insert  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_reattendance_monthly_insert;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_fact_reattendance_monthly_insert()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_reattendance_monthly_insert', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_reattendance_monthly_insert', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+INSERT INTO mamba_fact_reattendance_monthly
+(
+  client_id,
+  report_month,
+  attended_visit_count
+)
+SELECT
+  av.client_id,
+  STR_TO_DATE(DATE_FORMAT(av.first_qualifying_encounter_datetime,'%Y-%m-01'),'%Y-%m-%d'),
+  COUNT(DISTINCT av.visit_id)
+FROM mamba_fact_attended_visit av
+GROUP BY
+  av.client_id,
+  STR_TO_DATE(DATE_FORMAT(av.first_qualifying_encounter_datetime,'%Y-%m-01'),'%Y-%m-%d')
+HAVING COUNT(DISTINCT av.visit_id) > 1
+ON DUPLICATE KEY UPDATE
+  attended_visit_count = VALUES(attended_visit_count);
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_fact_reattendance_monthly_update  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_fact_reattendance_monthly_update;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_fact_reattendance_monthly_update()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_fact_reattendance_monthly_update', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_fact_reattendance_monthly_update', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+-- $END
+END //
+
+DELIMITER ;
+
+        
+-- ---------------------------------------------------------------------------------------------
+-- ----------------------  sp_data_processing_derived_opd_attendance  ----------------------------
+-- ---------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS sp_data_processing_derived_opd_attendance;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_data_processing_derived_opd_attendance()
+BEGIN
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+BEGIN
+    GET DIAGNOSTICS CONDITION 1
+
+    @message_text = MESSAGE_TEXT,
+    @mysql_errno = MYSQL_ERRNO,
+    @returned_sqlstate = RETURNED_SQLSTATE;
+
+    CALL sp_mamba_etl_error_log_insert('sp_data_processing_derived_opd_attendance', @message_text, @mysql_errno, @returned_sqlstate);
+
+    UPDATE _mamba_etl_schedule
+    SET end_time                   = NOW(),
+        completion_status          = 'ERROR',
+        transaction_status         = 'COMPLETED',
+        success_or_error_message   = CONCAT('sp_data_processing_derived_opd_attendance', ', ', @mysql_errno, ', ', @message_text)
+        WHERE id = (SELECT last_etl_schedule_insert_id FROM _mamba_etl_user_settings ORDER BY id DESC LIMIT 1);
+
+    RESIGNAL;
+END;
+
+-- $BEGIN
+CALL sp_fact_attended_visit;
+CALL sp_fact_reattendance_monthly;
 -- $END
 END //
 

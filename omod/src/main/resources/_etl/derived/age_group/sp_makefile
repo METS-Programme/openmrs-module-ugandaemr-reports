@@ -2,6 +2,7 @@
 ######################### age groups Dimension SPs  ######################
 #############################################################################
 dimensions/dim_age_group/sp_mamba_dim_agegroup_create.sql
+dimensions/dim_age_group/sp_mamba_dim_age_group_create.sql
 
 #############################################################################
 ######## A single stored procedure that invokes (CALLs) the above SPs #######

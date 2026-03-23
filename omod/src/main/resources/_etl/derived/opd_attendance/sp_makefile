@@ -1,0 +1,20 @@
+#############################################################################
+##################### Attendance Fact Table SPs #############################
+#############################################################################
+facts/fact_attended_visit/sp_fact_attended_visit.sql
+facts/fact_attended_visit/sp_fact_attended_visit_create.sql
+facts/fact_attended_visit/sp_fact_attended_visit_insert.sql
+facts/fact_attended_visit/sp_fact_attended_visit_update.sql
+
+#############################################################################
+################### Reattendance Monthly Fact Table SPs ######################
+#############################################################################
+facts/fact_reattendance_monthly/sp_fact_reattendance_monthly.sql
+facts/fact_reattendance_monthly/sp_fact_reattendance_monthly_create.sql
+facts/fact_reattendance_monthly/sp_fact_reattendance_monthly_insert.sql
+facts/fact_reattendance_monthly/sp_fact_reattendance_monthly_update.sql
+
+#############################################################################
+########## A single SP that invokes (CALLs) the above SPs ####################
+#############################################################################
+sp_data_processing_derived_opd_attendance.sql
